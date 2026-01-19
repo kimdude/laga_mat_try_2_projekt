@@ -22,7 +22,7 @@
     <div class="row">
       <!-- Sidebar with nav -->
       <div class="col-12 col-md-3 col-lg-2 order-2 order-md-1 p-0">
-        <Navigation v-if="displayNav" class="pb-md-4"/>
+        <Navigation v-if="displayNav" class="pb-md-4 h-100"/>
       </div>
 
       <!-- Main content -->
