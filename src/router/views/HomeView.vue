@@ -15,10 +15,18 @@
     <section class="p-4">
         <h2>{{ title }}</h2>
 
+        <!-- Add product form -->
+        <ProductForm v-if="displayForm" @product-added="toggleConfirm"/>
+
         <!-- Table of products -->
-        <ProductTable :shortcut="true" />   
+        <ProductTable v-if="!displayForm" :shortcut="true" />   
 
     </section>
+
+    <!-- Confirmation toast -->
+    <div v-if="confirmMessage !== ''" class="alert alert-warning position-absolute top-50 start-50 translate-middle">
+        <span>{{ confirmMessage }}</span>
+    </div>
 
 </template>
 
@@ -26,10 +34,17 @@
     //Imports
     import { ref, onMounted } from 'vue';
     import ProductTable from '../components/Product/ProductTable.vue';
+    import ProductForm from '../components/Product/ProductForm.vue';
 
-    //Button variables
+    //Reactive variables
+    const confirmMessage = ref("")
+
+    //Search product variables
     const pressedSearch = ref(false)
+
+    //Add product variables
     const pressedAdd = ref(false)
+    const displayForm = ref(false)
 
     //Table section variables
     const title= ref("Få i lager")
@@ -58,7 +73,11 @@
         //Setting aria-pressed attribute
         if(pressedSearch.value === false) { 
             pressedSearch.value = true 
+
+            //Hiding form
             pressedAdd.value = false
+            displayForm.value = false
+
         } else { 
             pressedSearch.value = false 
         }
@@ -66,18 +85,36 @@
         setTitle()
     }
 
-    //Toggle product add-shortcut button
+    //Toggle product add-shortcut
     const toggleAddBtn = () => {
 
         //Setting aria-pressed attribute
         if(pressedAdd.value === false) {
-            pressedAdd.value = true
             pressedSearch.value = false 
+
+            //Displaying form
+            pressedAdd.value = true
+            displayForm.value = true
+
         } else { 
             pressedAdd.value = false
+            displayForm.value = false
         }
 
         setTitle()
+    }
+
+    //Toggling confirm-message
+    const toggleConfirm = () => {
+        console.log("kom fram")
+
+        //Setting message
+        confirmMessage.value = "Produkt har lagts till!"
+        setTimeout(() => confirmMessage.value = "", 5000);
+
+        //Hiding add product form
+        displayForm.value = false
+        toggleAddBtn()
     }
 
 
