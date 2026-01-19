@@ -1,7 +1,7 @@
 <template>
 
     <!-- Table of products-->
-    <table class="table table-striped">
+    <table class="table table-striped overflow-scroll">
 
         <!-- Table head -->
         <thead>

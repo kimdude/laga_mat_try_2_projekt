@@ -1,7 +1,7 @@
 <template>
 
     <!-- Shortcuts -->
-    <section class="p-4">
+    <section class="p-4 mx-4">
         <h1 class="text-center pt-4">Välkommen!</h1>
         <p class="text-center pb-4">Vad vill du göra? Ta en genväg: </p>
 
@@ -12,7 +12,7 @@
     </section>
 
     <!-- Section for shortcuts -->
-    <section class="p-4">
+    <section class="px-2 px-md-4 py-4 mx-0 mx-md-4">
         <h2>{{ title }}</h2>
 
         <!-- Add product form -->
@@ -105,11 +105,10 @@
     }
 
     //Toggling confirm-message
-    const toggleConfirm = () => {
-        console.log("kom fram")
+    const toggleConfirm = (message) => {
 
         //Setting message
-        confirmMessage.value = "Produkt har lagts till!"
+        confirmMessage.value = message
         setTimeout(() => confirmMessage.value = "", 5000);
 
         //Hiding add product form

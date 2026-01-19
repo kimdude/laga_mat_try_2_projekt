@@ -1,7 +1,7 @@
 <template>
 
     <!-- Form to add product -->
-    <form class="container" @submit.prevent="addProduct">
+    <form class="container border-4 border-start border-info" @submit.prevent="addProduct">
         
         <!-- Name input -->
         <div class="m-3">
@@ -88,7 +88,7 @@
     const addProduct = async() => {
         console.log("Under utveckling...")
 
-        emits("productAdded")
+        emits("productAdded", "Produkten har lagts till")
     }
 
 </script>
