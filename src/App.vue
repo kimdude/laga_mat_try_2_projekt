@@ -21,8 +21,8 @@
 
     <div class="row">
       <!-- Sidebar with nav -->
-      <div v-if="displayNav" class="col-12 col-md-3 col-lg-2 order-2 order-md-1 p-0">
-        <Navigation class="pb-md-4"/>
+      <div class="col-12 col-md-3 col-lg-2 order-2 order-md-1 p-0">
+        <Navigation v-if="displayNav" class="pb-md-4"/>
       </div>
 
       <!-- Main content -->

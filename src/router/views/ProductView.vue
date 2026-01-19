@@ -1,5 +1,8 @@
 <template>
-    <h1>Lager</h1>
+    <section>
+        <h1>Logga in</h1>
+        <p>Häh</p>
+    </section>
 </template>
 
 <script setup>
