@@ -66,16 +66,7 @@
     const statusInp = ref("")
 
     //Reactive variables
-    const productsList = ref([ { product_id: 1, ean_code: "1234567891115",
-        product_name: "testarnas produkt",
-        label: "Test testarssons",
-        description: "Grymt testobjekt!",
-        price: 1200,
-        shelf_id: 5,
-        category_id: 9,
-        amount: 10,
-        status: "I lager"}
-        ])
+    const productsList = ref([])
 
     const updatingStock = ref(null)
 

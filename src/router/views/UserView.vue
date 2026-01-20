@@ -21,15 +21,24 @@
         </div>
 
         <!-- Add new user -->
-        <button type="button" class="btn btn-warning d-block mx-auto my-4">Ny användare</button>
+        <button type="button" class="btn btn-warning d-block mx-auto my-4" data-bs-toggle="modal" data-bs-target="#userModal">Ny användare</button>
         
     </section>
+
+    <!-- Modal with product details -->
+    <div class="modal modal-lg" id="userModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <UserForm />
+        </div>
+    </div>
+
 </template>
 
 <script setup>
     //Imports
     import { ref, onMounted } from 'vue';
     import UserItem from '../components/User/UserItem.vue';
+    import UserForm from '../components/User/UserForm.vue';
 
     onMounted(() => {
         emits("displayNav", true);
@@ -39,7 +48,10 @@
 
     //Emits
     const emits = defineEmits(["displayNav"]);
+
+    //Reactive variables
     const userList = ref([])
+    const confirmMessage = ref("")
 
     //Getting users
     const getUsers = async() => {
