@@ -28,13 +28,21 @@
 
         <!-- Table of products -->
         <ProductTable :shortcut="false"/>  
-        
-        <!-- Confirmation toast -->
-        <div v-if="confirmMessage !== ''" class="alert alert-warning position-absolute top-50 start-50 translate-middle">
-            <span>{{ confirmMessage }}</span>
+
+        <!-- Modal with product details -->
+        <div class="modal modal-lg" id="modalDetails">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @remove-product="toggleConfirm" :shortcut="false" :product-id="productId"/>
+            </div>
         </div>
 
     </section>
+
+    <!-- Confirmation toast -->
+    <div v-if="confirmMessage !== ''" class="alert alert-warning position-absolute top-50 start-50 translate-middle">
+        <span>{{ confirmMessage }}</span>
+    </div>
+
 </template>
 
 <script setup>
@@ -44,6 +52,7 @@
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductFilter from '../components/Product/ProductFilter.vue';
     import ProductSearch from '../components/Product/ProductSearch.vue';
+    import ProductItem from '../components/Product/ProductItem.vue';
 
     onMounted(() => {
         emits("displayNav", true);
@@ -63,6 +72,11 @@
 
     //Add variables
     const displayAdd = ref(false)
+
+    //Product details variables
+    const productDetails = ref({})
+    const productId = ref(null)
+    const displayDetails = ref(false)
 
     //Toggle add form
     const toggleAdd = () => {

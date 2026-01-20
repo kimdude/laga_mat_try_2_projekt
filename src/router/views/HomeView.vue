@@ -24,6 +24,13 @@
         <!-- Table of products -->
         <ProductTable v-if="!displayForm" :shortcut="true" />   
 
+        <!-- Modal with product details -->
+        <div class="modal modal-lg" id="modalDetails">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @remove-product="toggleConfirm" :shortcut="true" :product-id="productId"/>
+            </div>
+        </div>
+
     </section>
 
     <!-- Confirmation toast -->
@@ -39,6 +46,7 @@
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductSearch from '../components/Product/ProductSearch.vue';
+    import ProductItem from '../components/Product/ProductItem.vue';
 
     //Reactive variables
     const confirmMessage = ref("")
@@ -51,6 +59,11 @@
     //Add product variables
     const pressedAdd = ref(false)
     const displayForm = ref(false)
+
+    //Product details variables
+    const productDetails = ref({})
+    const productId = ref(null)
+    const displayDetails = ref(false)
 
     //Table section variables
     const title= ref("Få i lager")

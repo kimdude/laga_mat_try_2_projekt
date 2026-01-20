@@ -13,17 +13,23 @@
             <input v-model="codeInp" type="text" class="form-control" placeholder="EAN-kod" id="codeInp" aria-label="EAN-kod">
         </div>
 
-        <div class="row">
-
+        <div class="row d-flex flex-column flex-md-row">
             <!-- Label input -->
-            <div class="m-3 col"> 
+            <div class="m-3 col col-md-4"> 
                 <input v-model="labelInp" type="text" class="form-control" placeholder="Märke" id="labelInp" aria-label="Märke">
             </div>
 
-            <!-- Category input  - AS SEARCH BAR WITH OPTION TO ADD IF RESULT UNDER 2 -->
+            <!-- Category input -->
+            <div class="m-3 col" @focusin="categoryInpActive = true" @focusout="categoryInpActive = false">
+                <!-- Search bar -->
+                <input v-model="categoryInp" type="search" class="form-control" placeholder="Sök eller lägg till kategori" aria-label="Sök eller lägg till kategori" id="categoryInp" >
 
-
-
+                <!-- Search results -->
+                <ul v-if="categoryInpActive" class="list-group list-group-flush">
+                    <li v-for="(category, index) of categoryResult.slice(0,3)" class="list-group-item list-group-item-action"></li>
+                    <li class="list-group-item list-group-item-action">Lägg till kategori</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Description input -->
@@ -81,6 +87,9 @@
     const shelfInp = ref("")
 
     const shelfs = ref([])
+    const categoryInpActive = ref(false)
+    const allCategories = ref([])
+    const categoryResult = ref([])
 
     const errorMessage = ref("")
 
