@@ -21,18 +21,25 @@
         </div>
 
         <!-- Form to add product -->
-        <ProductForm v-if="displayAdd" class="mb-4" @product-added="toggleConfirm" />
+        <ProductForm v-if="displayAdd" class="mb-4" @product-added="toggleAdd" @confirm-message="toggleConfirm" />
 
         <!-- Form to filter products -->
         <ProductFilter v-if="displayFilter" class="mb-4"/>
 
         <!-- Table of products -->
-        <ProductTable :shortcut="false"/>  
+        <ProductTable :shortcut="false" @product-details="toggleDetails"/>  
 
         <!-- Modal with product details -->
         <div class="modal modal-lg" id="modalDetails">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @remove-product="toggleConfirm" :shortcut="false" :product-id="productId"/>
+                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @toggle-details="toggleDetails" @confirm-message="toggleConfirm" :shortcut="false" :product-id="productId"/>
+            </div>
+        </div>
+
+        <!-- Modal with edit form -->
+        <div class="modal modal-lg" ref="modalEdit">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <ProductEdit v-if="displayEdit" :product-details="productDetails" @updated-product="toggleEdit" @confirm-message="toggleConfirm"/>
             </div>
         </div>
 
@@ -47,15 +54,20 @@
 
 <script setup>
     //Imports
-    import { ref, onMounted } from 'vue';
+    import { ref, useTemplateRef, onMounted } from 'vue';
+    import { Modal } from 'bootstrap';
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductFilter from '../components/Product/ProductFilter.vue';
     import ProductSearch from '../components/Product/ProductSearch.vue';
     import ProductItem from '../components/Product/ProductItem.vue';
+    import ProductEdit from '../components/Product/ProductEdit.vue';
 
     onMounted(() => {
         emits("displayNav", true);
+
+        //Creating new modal instance for edit modal
+        modalFunctions = new Modal(modalEdit.value)
     })
 
     //Emits
@@ -72,6 +84,11 @@
 
     //Add variables
     const displayAdd = ref(false)
+
+    //Edit variables
+    const displayEdit = ref(false)
+    const modalEdit = useTemplateRef("modalEdit")
+    let modalFunctions
 
     //Product details variables
     const productDetails = ref({})
@@ -91,7 +108,7 @@
     //Toggle confirm message
     const toggleConfirm = (message) => {
         confirmMessage.value = message
-        toggleAdd()
+        setTimeout(() => confirmMessage.value = "", 5000);
     }
 
     //Toggle filter
@@ -102,6 +119,36 @@
         } else { 
             displayFilter.value = false
         }
+    }
+
+    //Toggle edit modal
+    const toggleEdit = () => {
+        if(displayEdit.value === false) {
+
+            //Displaying edit modal
+            displayEdit.value = true
+            modalFunctions.show()
+
+            displayDetails.value = false
+
+        } else {
+
+            //Hiding edit modal
+            displayEdit.value = false
+            modalFunctions.hide()
+
+        }
+    }
+
+    const toggleDetails = (id) => {
+            if(displayDetails.value === false ) {
+                displayDetails.value = true
+                productId.value = id
+
+            } else {
+                displayDetails.value = false
+                productId.value = id
+            }
     }
 
 </script>

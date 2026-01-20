@@ -53,7 +53,7 @@
     const props = defineProps(["shortcut","productId"])
 
     //Emits
-    const emits = defineEmits(["editProduct", "removeProduct"])
+    const emits = defineEmits(["editProduct", "toggleDetails", "confirmMessage"])
 
     //Editing product
     const edit = () => {
@@ -69,7 +69,8 @@
     const remove = () => {
         console.log("under utveckling...")
 
-        emits("removeProduct", "Produkt borttagen")
+        emits("confirmMessage","Produkten är uppdaterad")
+        emits("toggleDetails", null)
     }
 
 </script>

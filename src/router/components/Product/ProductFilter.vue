@@ -5,7 +5,10 @@
         
         <!-- Filter categories -->
         <div class="px-4 py-2">
-
+            <select v-model="categoryInp" class="form-select" id="categoryInp">
+                <option disabled value="">Välj kategori</option>
+                <option v-for="category in categories" :key="category.category_id" :value="category.category_id"></option>
+            </select>
         </div>
 
         <!-- Filter labels -->
@@ -40,6 +43,8 @@
     const categoryInp = ref("")
     const labelInp = ref("")
     const statusInp = ref("")
+
+    const categories = ref("")
 
     //Filter products
     const setFilter = () => {
