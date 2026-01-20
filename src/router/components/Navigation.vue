@@ -1,6 +1,6 @@
 <template>
     <!-- Navigation -->
-    <nav class="navbar bg-info justify-content-center">
+    <nav class="navbar bg-info justify-content-center align-content-start">
 
         <!-- Logo -->
         <RouterLink to="/" class="navbar-brand d-none d-md-block mb-4 mt-4">
@@ -39,8 +39,10 @@
 </script>
 
 <style scoped>
-    /* Links */
+
+    /* Active vue links */
     .router-link-active {
         font-weight: 700;
     }
+
 </style>

@@ -33,7 +33,7 @@
 
         <div class="row">
             <!-- Price input -->
-            <div class="input-group m-3 col">
+            <div class="input-group m-3 col pe-0">
                 <input v-model.number="priceInp" type="number" class="form-control form-control-sm" placeholder="Försäljningspris" id="priceInp" aria-label="Försäljningspris">
                 <span class="input-group-text">kr</span>
             </div>
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Shelf input -->
-            <div class="m-3 col">
+            <div class="m-3 col-11 col-md-3">
                 <select v-model="shelfInp" class="form-select" id="shelfInp">
                     <option disabled value="">Välj hyllplan</option>
                     <option v-for="shelf in shelfs" :key="shelf.shelf_id" :value="shelf.shelf_id">{{ shelf.shelf }}</option>

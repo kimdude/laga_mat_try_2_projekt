@@ -1,4 +1,8 @@
 <template>
+    <!-- Search bar -->
+    <div class="mt-4 pt-4 pt-md-0">
+        <ProductSearch @search-term="(term) => searchTerm = term"/>
+    </div>
     
     <!-- Section with all products -->
     <section class="px-2 px-md-4 py-4 mx-0 mx-md-4">
@@ -39,25 +43,35 @@
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductFilter from '../components/Product/ProductFilter.vue';
+    import ProductSearch from '../components/Product/ProductSearch.vue';
 
     onMounted(() => {
         emits("displayNav", true);
     })
 
     //Emits
-    const emits = defineEmits(["displayNav"]);
+    const emits = defineEmits(["displayNav"])
 
     //Reactive variables
     const confirmMessage = ref("")
 
-    //Toggle icon variables
-    const displayAdd = ref(false)
+    //SearchVariables
+    const searchTerm = ref("")
+
+    //Filter variables
     const displayFilter = ref(false)
+
+    //Add variables
+    const displayAdd = ref(false)
 
     //Toggle add form
     const toggleAdd = () => {
-        if(displayAdd.value === false) displayAdd.value = true
-        else displayAdd.value = false
+        if(displayAdd.value === false){ 
+            displayAdd.value = true
+            displayFilter.value = false
+        } else {
+            displayAdd.value = false
+        }
     }
 
     //Toggle confirm message
@@ -68,8 +82,12 @@
 
     //Toggle filter
     const toggleFilter = () => {
-        if(displayFilter.value === false) displayFilter.value = true
-        else displayFilter.value = false
+        if(displayFilter.value === false){ 
+            displayFilter.value = true
+            displayAdd.value = false
+        } else { 
+            displayFilter.value = false
+        }
     }
 
 </script>

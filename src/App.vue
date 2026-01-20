@@ -21,12 +21,12 @@
 
     <div class="row">
       <!-- Sidebar with nav -->
-      <div class="col-12 col-md-3 col-lg-2 order-2 order-md-1 p-0">
+      <div class="col-12 col-md-3 col-lg-2 position-sticky bottom-0 position-md-static order-2 order-md-1 p-0" id="nav">
         <Navigation v-if="displayNav" class="pb-md-4 h-100"/>
       </div>
 
       <!-- Main content -->
-      <main class="col col-md-9 col-lg-10 order-1 order-md-2 p-4">
+      <main class="col col-md-9 col-lg-10 order-1 order-md-2 p-4" id="main">
         <RouterView @display-nav="displayNav = $event"/>
       </main>
 
@@ -36,5 +36,20 @@
 </template>
 
 <style scoped>
+
+  /* Compensating media queries */
+
+  @media screen and (max-width: 768px) {
+    #main {
+      height: 100vh;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+
+    /* Had no effect with only just bootstrap */
+    #nav { position: static !important; }
+
+  }
 
 </style>

@@ -18,6 +18,9 @@
         <!-- Add product form -->
         <ProductForm v-if="displayForm" @product-added="toggleConfirm"/>
 
+        <!-- Search bar -->
+        <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>
+
         <!-- Table of products -->
         <ProductTable v-if="!displayForm" :shortcut="true" />   
 
@@ -32,15 +35,18 @@
 
 <script setup>
     //Imports
-    import { ref, onMounted } from 'vue';
+    import { ref, watch, onMounted } from 'vue';
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
+    import ProductSearch from '../components/Product/ProductSearch.vue';
 
     //Reactive variables
     const confirmMessage = ref("")
 
     //Search product variables
     const pressedSearch = ref(false)
+    const displaySearch = ref(false)
+    const searchTerm = ref("")
 
     //Add product variables
     const pressedAdd = ref(false)
@@ -73,6 +79,7 @@
         //Setting aria-pressed attribute
         if(pressedSearch.value === false) { 
             pressedSearch.value = true 
+            displaySearch.value = true
 
             //Hiding form
             pressedAdd.value = false
@@ -80,6 +87,7 @@
 
         } else { 
             pressedSearch.value = false 
+            displaySearch.value = false
         }
 
         setTitle()
@@ -115,7 +123,6 @@
         displayForm.value = false
         toggleAddBtn()
     }
-
 
 </script>
 
