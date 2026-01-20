@@ -4,21 +4,25 @@
     <div class="modal-content p-4">
 
         <!-- Header -->
-        <div class="modal-header container-fluid">
-            <h2 class="modal-title">Redigera produkt</h2>
-            <button type="button" class="btn-clos col-1" data-bs-dismiss="modal"></button>
+        <div class="modal-header align-items-start">
+            <div class="w-75">
+                <h2 class="modal-title">Redigera produkt</h2>
 
-            <!-- Update title -->
-            <div class="form-floating mt-3">
-                <input v-model="nameInp" type="text" class="form-control" placeholder="Produktnamn" id="nameInp" aria-label="Produktnamn">
-                <label for="nameInp" class="form-label">Produktnamn</label>
+                <!-- Update title -->
+                <div class="form-floating mt-3">
+                    <input v-model="nameInp" type="text" class="form-control" placeholder="Produktnamn" id="nameInp" aria-label="Produktnamn">
+                    <label for="nameInp" class="form-label">Produktnamn</label>
+                </div>
+
+                <!-- Update description -->
+                <div class="form-floating mt-3">
+                    <textarea v-model="descrInp" class="form-control" placeholder="Beskrivning" id="descrInp" aria-label="Produktbeskrivning"></textarea>
+                    <label for="descrInp" class="form-label">Produktbeskrivning</label>
+                </div>
             </div>
 
-            <!-- Update description -->
-            <div class="form-floating mt-3">
-                <textarea v-model="descrInp" class="form-control" placeholder="Beskrivning" id="descrInp" aria-label="Produktbeskrivning"></textarea>
-                <label for="descrInp" class="form-label">Produktbeskrivning</label>
-            </div>
+            <!-- Closing button -->
+            <button type="button" class="btn-close flex-end" @click="$emit('updatedProduct', null)"></button>
             <hr>
         </div>
         
@@ -26,15 +30,16 @@
         <div class="modal-body">
             
             <!-- Update label -->
-            <div class="col form-floating"> 
+            <div class="mt-3 form-floating"> 
                 <input v-model="labelInp" type="text" class="form-control" placeholder="Märke" id="labelInp" aria-label="Märke">
                 <label for="labelInp" class="form-label">Märke</label>
             </div>
 
-            <!-- Update category -->>
-            <div class="m-3 col" @focusin="categoryInpActive = true" @focusout="categoryInpActive = false">
+            <!-- Update category -->
+            <div class="mt-3 form-floating" @focusin="categoryInpActive = true" @focusout="categoryInpActive = false">
                 <!-- Search bar -->
                 <input v-model="categoryInp" type="search" class="form-control" placeholder="Sök eller lägg till kategori" aria-label="Sök eller lägg till kategori" id="categoryInp" >
+                <label for="categoryInp" class="form-label">Kategori</label>
 
                 <!-- Search results -->
                 <ul v-if="categoryInpActive" class="list-group list-group-flush">
@@ -44,47 +49,66 @@
             </div>
 
             <h3 class="mt-4">Lager info</h3>
-            <!-- Update status -->
-            <select v-model="statusInp" class="form-select form-select-sm mt-3" id="statusInp">
-                <option disabled value="">Välj status</option>
-                <option value="I lager">I lager</option>
-                <option value="Beställd">Beställd</option>
-                <option value="Slut">Slut</option>
-            </select>
 
-            <!-- Update amount -->
-            <div class="input-group col form-floating mt-3">
-                <input v-model.number="amountInp" type="number" class="form-control" placeholder="Antal i lager" id="amountInp" aria-label="Antal i lager">
-                <label for="amountInp" class="form-label">Antal i lager</label>
-                <span class="input-group-text">st</span>
+            <div cass="container mt-3">
+                <div class="row">
+
+                    <!-- Update shelf -->
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="form-floating">
+                            <select v-model="shelfInp" class="form-select" id="shelfInp">
+                                <option disabled value="">Välj hyllplan</option>
+                                <option v-for="shelf in shelfs" :key="shelf.shelf_id" :value="shelf.shelf_id">{{ shelf.shelf }}</option>
+                            </select>
+                            <label for="shelfInp" class="form-label">Hyllplan</label>
+                        </div>
+                    </div>
+
+                    <!-- Update status -->
+                    <div class="col mt-3">
+                        <div class="form-floating">
+                            <select v-model="statusInp" class="form-select form-select-sm" id="statusInp">
+                                <option disabled value="">Välj status</option>
+                                <option value="I lager">I lager</option>
+                                <option value="Beställd">Beställd</option>
+                                <option value="Slut">Slut</option>
+                            </select>
+                            <label for="statusInp" class="form-label">Status</label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Update shelf -->
-            <div class="col mt-3">
-                <select v-model="shelfInp" class="form-select" id="shelfInp">
-                    <option disabled value="">Välj hyllplan</option>
-                    <option v-for="shelf in shelfs" :key="shelf.shelf_id" :value="shelf.shelf_id">{{ shelf.shelf }}</option>
-                </select>
-            </div>
 
-            <!-- Update price -->
-            <div class="input-group form-floating mt-3 col">
-                <input v-model.number="priceInp" type="number" class="form-control form-control-sm" placeholder="Försäljningspris" id="priceInp" aria-label="Försäljningspris">
-                <label for="priceInp" class="form-label">Försäljningspris</label>
-                <span class="input-group-text">kr</span>
-            </div>
+            <div cass="container">   
+                <div class="row">
 
-            <div class="modal-footer">
-                <hr>
-                <p v-if="errorMessage !== ''"></p>
-                <button type="button" class="btn btn-warning float-end">Uppdatera</button>
+                    <!-- Update amount -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-group form-floating mt-3">
+                            <input v-model.number="amountInp" type="number" class="form-control" placeholder="Antal i lager" id="amountInp" aria-label="Antal i lager">
+                            <label for="amountInp" class="form-label">Antal i lager</label>
+                            <span class="input-group-text">st</span>
+                        </div>
+                    </div>
+
+                    <!-- Update price -->
+                    <div class="col">
+                        <div class="input-group form-floating mt-3 col">
+                            <input v-model.number="priceInp" type="number" class="form-control form-control-sm" placeholder="Försäljningspris" id="priceInp" aria-label="Försäljningspris">
+                            <label for="priceInp" class="form-label">Försäljningspris</label>
+                            <span class="input-group-text">kr</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="modal-footer">
             <hr>
-            <button type="button" class="btn btn-warning float-end mx-2">Uppdatera</button>
+            <p v-if="errorMessage !== ''">{{ errorMessage }}</p>
+            <button type="button" class="btn btn-warning float-end" @click="update">Uppdatera</button>
         </div>
     </div>
 </template>
@@ -105,19 +129,21 @@
     const emits = defineEmits(["updatedProduct", "confirmMessage"])
 
     //Input variables
-    const nameInp = ref(props.product.name)
-    const descrInp = ref(props.product.description)
-    const labelInp = ref(props.product.label)
-    const categoryInp = ref(props.product.category)
-    const priceInp = ref(props.product.price)
-    const amountInp = ref(props.product.amount)
-    const statusInp = ref(props.product.status)
-    const shelfInp = ref(props.product.shelf)
+    const nameInp = ref(props.productDetails.name)
+    const descrInp = ref(props.productDetails.description)
+    const labelInp = ref(props.productDetails.label)
+    const categoryInp = ref(props.productDetails.category)
+    const priceInp = ref(props.productDetails.price)
+    const amountInp = ref(props.productDetails.amount)
+    const statusInp = ref(props.productDetails.status)
+    const shelfInp = ref(props.productDetails.shelf)
 
     const shelfs = ref([])
     const categoryInpActive = ref(false)
     const allCategories = ref([])
     const categoryResult = ref([])
+
+    const errorMessage = ref("")
 
     //Getting shelfs
     const getShelfs = async() => {
@@ -133,7 +159,7 @@
     const update = async() => {
         const errors = []
 
-        if(statusInp.value !== props.product.status || amountInp.value !== props.product.amount) updateStock();
+        if(statusInp.value !== props.productDetails.status || amountInp.value !== props.productDetails.amount) updateStock();
 
         if(nameInp.value === "") errors.push("produktnamn");
         if(descrInp.value === "") errors.push("beskrivning");
@@ -147,12 +173,8 @@
 
 
         emits("confirmMessage","Produkten är uppdaterad")
-        emits("updatedProduct")
+        emits("updatedProduct", null)
 
-    }
-
-    const updateStock = async() => {
-        console.log("Updating stock-function...")
     }
 
 </script>

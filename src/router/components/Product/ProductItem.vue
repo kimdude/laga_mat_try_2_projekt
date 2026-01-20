@@ -1,15 +1,15 @@
 <template>
 
     <!-- Modal content with product details -->
-    <div class="modal-content p-4">
+    <div class="modal-content p-sm-4">
 
         <!-- Header -->
-        <div class="modal-header container-fluid">
-            <div class="row">
+        <div class="modal-header align-items-start">
+            <div class="w-75">
                 <h2 class="modal-title">Test</h2>
-                <button type="button" class="btn-clos col-1" data-bs-dismiss="modal"></button>
+                <p class="col"> Produktbeskrivning </p>
             </div>
-            <p> Produktbeskrivning </p>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" @click="$emit('toggleDetails',null)"></button>
             <hr>
         </div>
 
@@ -69,7 +69,7 @@
     const remove = () => {
         console.log("under utveckling...")
 
-        emits("confirmMessage","Produkten är uppdaterad")
+        emits("confirmMessage","Produkten har tagits bort")
         emits("toggleDetails", null)
     }
 

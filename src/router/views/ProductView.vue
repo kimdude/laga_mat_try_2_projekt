@@ -32,7 +32,7 @@
         <!-- Modal with product details -->
         <div class="modal modal-lg" id="modalDetails">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @toggle-details="toggleDetails" @confirm-message="toggleConfirm" :shortcut="false" :product-id="productId"/>
+                <ProductItem v-if="displayDetails" @edit-product="toggleEdit" @toggle-details="toggleDetails" @confirm-message="toggleConfirm" :shortcut="false" :product-id="productId"/>
             </div>
         </div>
 
@@ -122,10 +122,11 @@
     }
 
     //Toggle edit modal
-    const toggleEdit = () => {
+    const toggleEdit = (details) => {
         if(displayEdit.value === false) {
 
             //Displaying edit modal
+            productDetails.value = details
             displayEdit.value = true
             modalFunctions.show()
 
@@ -134,6 +135,7 @@
         } else {
 
             //Hiding edit modal
+            productDetails.value = details
             displayEdit.value = false
             modalFunctions.hide()
 
