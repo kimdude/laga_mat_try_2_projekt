@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import authService from '../services/auth.service'
 import LoginView from '../views/LoginView.vue'
 import HomeView from '../views/HomeView.vue'
 import ProductView from '../views/ProductView.vue'
@@ -43,7 +44,27 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+
+  //Setting title
   document.title = "Laga Mat | " + to.meta.title
+
+  //Checking auth
+  const canAccess = authService.authUser()
+
+  if(to.name !== "login" && !canAccess){ 
+    return {
+      path: "/login",
+      query: { redirect: to.fullPath }
+    }
+  }
+  else if(to.name === "login" && canAccess){ 
+    return {
+      path: "/"
+    }
+  }
+
+  return true
+
 })
 
 export default router

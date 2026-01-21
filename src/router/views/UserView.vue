@@ -1,6 +1,6 @@
 <template>
     <!-- Log out-->
-    <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="d-block ms-auto">
+    <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="d-block ms-auto" @click="logout">
 
     <!-- Section about logged-in user -->
     <section class="p-4 m-4 text-center">
@@ -37,6 +37,7 @@
 <script setup>
     //Imports
     import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
     import UserItem from '../components/User/UserItem.vue';
     import UserForm from '../components/User/UserForm.vue';
 
@@ -49,6 +50,9 @@
     //Emits
     const emits = defineEmits(["displayNav"]);
 
+    //Variables
+    const router = useRouter()
+
     //Reactive variables
     const userList = ref([])
     const confirmMessage = ref("")
@@ -57,8 +61,13 @@
     const getUsers = async() => {
 
     }
+
+    const logout = () => {
+        localStorage.removeItem("token")
+        router.push({ name: "login" })
+    }
 </script>
 
 <style scoped>
-    img:hover { cursor: pointer;}
+    img:hover { cursor: pointer; }
 </style>

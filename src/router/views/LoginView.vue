@@ -25,7 +25,7 @@
 
                     <!-- Password input -->
                     <div class="mb-3">
-                        <input v-model="passwordInp" type="password" class="form-control" id="passwordInp" placeholder="Lösenorder" aria-label="Lösenord">
+                        <input v-model="passwordInp" type="password" class="form-control" id="passwordInp" placeholder="Lösenord" aria-label="Lösenord">
                     </div>
 
                     <p v-if="errorMessage !== ''" class="alert alert-warning">{{ errorMessage }}</p>
@@ -41,6 +41,8 @@
 <script setup>
     //Imports
     import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import userService from '../services/user.service';
 
     onMounted(() => {
         emits("displayNav", false);
@@ -48,6 +50,9 @@
 
     //Emits
     const emits = defineEmits(["displayNav"]);
+
+    //Variables
+    const router = useRouter()
 
     //Form variables
     const usernameInp = ref("")
@@ -64,11 +69,23 @@
 
         if(error.length > 0) {
             const str = error.join(", ")
-            errorMessage.value = `Du måste ange ${str}.`
+            return errorMessage.value = `Du måste ange ${str}.`
         }
 
-        console.log("Under utveckling...")
-        console.log(usernameInp.value, passwordInp.value)
+        const user = {
+            "username": usernameInp.value,
+            "password": passwordInp.value
+        }
+
+        //Sending user inputs
+        const result = await userService.login(user)
+
+        //Checking if result is ok
+        if(result !== true) {
+            return errorMessage.value = result
+        }
+
+        router.push({name: "dashboard"})
 
     }
 
