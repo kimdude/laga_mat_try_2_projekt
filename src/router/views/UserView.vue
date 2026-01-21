@@ -6,13 +6,13 @@
     <section class="p-4 m-4 text-center">
         <img src="../assets/user_icon.svg" alt="Platshållare för profilbild" width="130">
 
-        <h1 class="mt-4">För och efternamne</h1>
-        <p>Användarnamn</p>
-        <span class="badge text-bg-info">Roll</span>
+        <h1 class="mt-4">{{ userFname }} {{ userLname }}</h1>
+        <p>{{ userUsername }}</p>
+        <span class="badge text-bg-info">{{ userRole }}</span>
     </section>
 
     <!-- Section to handle users as admin -->
-    <section class="p-4 mx-md-4">
+    <section v-if="userRole === 'admin'" class="p-4 mx-md-4">
 
         <!-- Articles with users-->
         <h2>Alla användare</h2>
@@ -40,9 +40,11 @@
     import { useRouter } from 'vue-router';
     import UserItem from '../components/User/UserItem.vue';
     import UserForm from '../components/User/UserForm.vue';
+    import userService from '../services/user.service';
 
     onMounted(() => {
-        emits("displayNav", true);
+        emits("displayNav", true)
+        getUser()
         
         //CHECK ROLE AND IF ADMIN TRIGGER GETUSERS
     })
@@ -57,8 +59,26 @@
     const userList = ref([])
     const confirmMessage = ref("")
 
-    //Getting users
-    const getUsers = async() => {
+    //Current user variables
+    const userFname = ref("")
+    const userLname = ref("")
+    const userUsername = ref("")
+    const userRole = ref("")
+
+    //Getting user
+    const getUser = async() => {
+        const result = await userService.fetchInfo()
+
+        //If result not ok
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+
+        //Setting user info
+        userFname.value = result.fname
+        userLname.value = result.lname
+        userUsername.value = result.username
+        userRole.value = result.role
 
     }
 

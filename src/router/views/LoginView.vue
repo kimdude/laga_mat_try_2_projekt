@@ -64,6 +64,7 @@
         errorMessage.value = ""
         const error = []
 
+        //Validating user inputs
         if(usernameInp.value === "") error.push("användarnamn")
         if(passwordInp.value === "") error.push("lösenord")
 
@@ -85,6 +86,7 @@
             return errorMessage.value = result
         }
 
+        //Redirecting
         router.push({name: "dashboard"})
 
     }

@@ -35,6 +35,8 @@
         roleInp.value = role
     }
 
+    //Getting all users
+
     //Updating user roles
     const updateRole = async() => {
         console.log(roleInp.value)
