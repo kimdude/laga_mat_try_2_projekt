@@ -12,7 +12,7 @@
                     <option value="admin">Administratör</option>
                     <option value="user">Användare</option>
                 </select>
-                <button type="button" class="btn btn-warning" @click="updateRole">Uppdatera</button>
+                <button type="button" class="btn btn-warning" @click="updateRole(user.user_id, user.role)">Uppdatera</button>
             </div>
         </div>
         
@@ -26,13 +26,16 @@
 
 <script setup>
     import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
     import userService from '../../services/user.service';
 
     //Props
     const props = defineProps(["users"])
 
     //Emits
-    const emits = defineEmits(["confirmDelete"])
+    const emits = defineEmits(["confirm"])
+
+    const router = useRouter()
 
     //Reactive variables
     const updatingRole = ref(null)
@@ -45,8 +48,24 @@
     }
 
     //Updating user roles
-    const updateRole = async() => {
-        console.log(roleInp.value)
+    const updateRole = async(id, role) => {
+
+        if(roleInp.value === role) {
+            return updatingRole.value = null
+        }
+
+        const newRole = {
+            role: roleInp.value
+        }
+
+        const result = await userService.updateRole(id, newRole)
+
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+
+        emits("confirm", `${result.fname} ${result.lname} har uppdaterats till ${result.role}.`)
+        updatingRole.value = null
     }
 
     //Deleting user
@@ -54,10 +73,10 @@
         const result = await userService.deleteUser(id)
 
         if(result === false) {
-            return emits("confirmDelete", "Ett fel uppstod. Prova igen senare.")
+            router.push({ name: "login" })
         }
 
-        emits("confirmDelete", `${result} har tagits bort.`)
+        emits("confirm", `${result} har tagits bort.`)
     }
 
 </script>

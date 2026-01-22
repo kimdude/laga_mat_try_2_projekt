@@ -154,6 +154,34 @@ export default {
         }
     },
 
+    async updateRole(id, roleObj) {
+        try{
+            //Getting token
+            const token = localStorage.getItem("token")
+
+            const result = await fetch("https://projekt-try2-backend.onrender.com/admin/" + id, {
+                method: "PUT",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": "Bearer " + token
+                },
+                body: JSON.stringify(roleObj)
+            })
+
+            //Checking result
+            if(!result.ok) {
+                throw new Error("Ett fel uppstod. Prova igen senare.")
+            }
+
+            const data = await result.json()
+            return data
+
+        } catch(error) {    
+            console.log(error)
+            return false
+        }
+    },
+
     async deleteUser(id) {
         try{
             //Getting token
@@ -169,14 +197,13 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ogiltigt användar ID.")
+                throw new Error("Ett fel uppstod.")
             }
 
             const data = await result.json()
             return data.username
 
         } catch(error) {    
-            console.log(error)
             return false
         }
     }

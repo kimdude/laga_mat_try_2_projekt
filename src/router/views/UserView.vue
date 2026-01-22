@@ -17,7 +17,7 @@
         <!-- Articles with users-->
         <h2>Alla användare</h2>
         <div>
-            <UserItem :users="userList" @confirm-delete="confirm"/>
+            <UserItem :users="userList" @confirm="confirm"/>
         </div>
 
         <!-- Add new user -->
