@@ -13,7 +13,7 @@
 
   <!-- Logo on sm -->
   <div v-if="displayNav" class="position-relative d-md-none">
-    <img src="/src/router/assets/logo.svg" class="position-absolute top-0 end-0 p-2 z-3" width="90" alt="Logo">
+    <img src="/src/router/assets/logo.svg" class="position-absolute top-0 start-0 p-2 z-3" width="90" alt="Logo">
   </div>
 
   <!-- Grid -->

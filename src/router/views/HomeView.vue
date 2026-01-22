@@ -25,8 +25,8 @@
         <ProductTable v-if="!displayForm" :shortcut="true" />   
 
         <!-- Modal with product details -->
-        <div class="modal modal-lg" id="modalDetails">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal" id="modalDetails">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @remove-product="toggleConfirm" :shortcut="true" :product-id="productId"/>
             </div>
         </div>
@@ -34,7 +34,7 @@
     </section>
 
     <!-- Confirmation toast -->
-    <div v-if="confirmMessage !== ''" class="alert alert-warning position-absolute top-50 start-50 translate-middle">
+    <div v-if="confirmMessage !== ''" class="alert alert-warning position-fixed top-50 start-50 translate-middle">
         <span>{{ confirmMessage }}</span>
     </div>
 

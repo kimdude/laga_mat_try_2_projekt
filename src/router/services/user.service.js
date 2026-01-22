@@ -1,9 +1,6 @@
 "use strict"
 
-/* Functions for user-routes */
-//Variables
-
-
+/* API-calls for user-routes */
 export default {
     
     //Login user
@@ -76,7 +73,7 @@ export default {
             const token = localStorage.getItem("token")
 
             const result = await fetch("https://projekt-try2-backend.onrender.com/user", {
-                method: "GET",
+                method: "PUT",
                 headers: {
                     "content-type": "application/json",
                     "authorization": "Bearer " + token
@@ -93,6 +90,94 @@ export default {
 
         } catch(error) {    
             console.log(error) //DEFINIERA FEL, KOLLA OM DET ÄR TOKEN SOM GÅTT UT
+        }
+    },
+
+    //Getting all users
+    async getAllUsers() {
+        try{
+            //Getting token
+            const token = localStorage.getItem("token")
+
+            const result = await fetch("https://projekt-try2-backend.onrender.com/admin", {
+                method: "GET",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": "Bearer " + token
+                }
+            })
+
+            //Checking result
+            if(!result.ok) {
+                throw new Error("Ett fel uppstod. Prova igen senare.")
+            }
+
+            const data = await result.json()
+            return data
+
+        } catch(error) {    
+            return false
+        }
+    },
+
+    async addUser(userObj) {
+        try{
+            //Getting token
+            const token = localStorage.getItem("token")
+
+            const result = await fetch("https://projekt-try2-backend.onrender.com/admin", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": "Bearer " + token
+                },
+                body: JSON.stringify(userObj)
+            })
+
+            //Checking result
+            if(!result.ok) {
+                throw new Error("Användarnamnet måste vara unikt.")
+            }
+
+            const data = await result.json()
+            return data.username
+
+        } catch(error) {    
+
+            //Error 409
+            if(error.message === "Användarnamnet måste vara unikt.") {
+                return "Användarnamnet måste vara unikt."
+            }
+
+            //Unexpected errors
+            return false
+        }
+    },
+
+    async deleteUser(id) {
+        try{
+            //Getting token
+            const token = localStorage.getItem("token")
+
+            const result = await fetch("https://projekt-try2-backend.onrender.com/admin/" + id, {
+                method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": "Bearer " + token
+                }
+            })
+
+            //Checking result
+            if(!result.ok) {
+                throw new Error("Ogiltigt användar ID.")
+            }
+
+            const data = await result.json()
+            return data.username
+
+        } catch(error) {    
+            console.log(error)
+            return false
         }
     }
 

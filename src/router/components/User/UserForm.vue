@@ -5,11 +5,10 @@
 
         <!-- Header -->
         <div class="modal-header align-items-start">
-            <h2 class="modal-title">Lägg till användare</h2>
+            <h2 class="modal-title">Ny användare</h2>
 
             <!-- Closing button -->
             <button type="button" class="btn-close flex-end" data-bs-dismiss="modal"></button>
-            <hr>
         </div>
 
         <!-- Body -->
@@ -46,7 +45,7 @@
 
                 <!-- Password -->
                 <div class="form-floating mt-3">
-                    <input v-model="passwordInp" type="passwordInp" class="form-control" placeholder="Lösenord" id="passwordInp" aria-label="Lösenord">
+                    <input v-model="passwordInp" type="password" class="form-control" placeholder="Lösenord" id="passwordInp" aria-label="Lösenord">
                     <label for="passwordInp" class="form-label">Lösenord</label>
                 </div>
             </form>
@@ -54,9 +53,8 @@
 
         <!-- Footer -->
         <div class="modal-footer">
-            <hr>
-            <p v-if="errorMessage !== ''">{{ errorMessage }}</p>
-            <button type="submit" class="btn btn-warning">Lägg till</button>
+            <p v-if="errorMessage !== ''" class="alert alert-warning">{{ errorMessage }}</p>
+            <button type="submit" class="btn btn-warning" @click="add">Lägg till</button>
         </div>
     </div>
 
@@ -64,6 +62,10 @@
 
 <script setup>
     import { ref } from 'vue';
+    import userService from '../../services/user.service';
+
+    //Emits
+    const emits = defineEmits(["confirmMessage"])
 
     //Reactive variables
     const errorMessage = ref("")
@@ -77,7 +79,46 @@
 
     //Add user
     const add = async() => {
-        console.log("Under utveckling...")
+        const errors = []
+
+        //Validating inputs
+        if(fnameInp.value === "") errors.push("förnamn")
+        if(lnameInp.value === "") errors.push("efternamn")
+        if(roleInp.value === "") errors.push("roll")
+        if(unameInp.value === "") errors.push("användarnamn")
+        if(passwordInp.value === "") errors.push("lösenord")
+
+        if(errors.length > 0) {
+            const str = errors.join(", ")
+            return errorMessage.value = `Du måste ange ${str}.`
+        }
+
+        const newUser = {
+            fname: fnameInp.value,
+            lname: lnameInp.value,
+            username: unameInp.value,
+            password: passwordInp.value,
+            role: roleInp.value
+        }
+
+        const result = await userService.addUser(newUser)
+
+        if(result === false) {
+            return errorMessage.value = `Ett fel uppstod. Prova igen senare`
+        }
+
+        if(result === "Användarnamnet måste vara unikt.") {
+            return errorMessage.value = result
+        }
+
+        fnameInp.value = ""
+        lnameInp.value = ""
+        unameInp.value = ""
+        passwordInp.value = ""
+        roleInp.value = ""
+
+        emits("confirmMessage", `${result} har lagts till.`)
+
     }
 
 </script>

@@ -30,15 +30,15 @@
         <ProductTable :shortcut="false" @product-details="toggleDetails"/>  
 
         <!-- Modal with product details -->
-        <div class="modal modal-lg" id="modalDetails">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal" id="modalDetails">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <ProductItem v-if="displayDetails" @edit-product="toggleEdit" @toggle-details="toggleDetails" @confirm-message="toggleConfirm" :shortcut="false" :product-id="productId"/>
             </div>
         </div>
 
         <!-- Modal with edit form -->
-        <div class="modal modal-lg" ref="modalEdit">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal" ref="modalEdit">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <ProductEdit v-if="displayEdit" :product-details="productDetails" @updated-product="toggleEdit" @confirm-message="toggleConfirm"/>
             </div>
         </div>
@@ -46,7 +46,7 @@
     </section>
 
     <!-- Confirmation toast -->
-    <div v-if="confirmMessage !== ''" class="alert alert-warning position-absolute top-50 start-50 translate-middle">
+    <div v-if="confirmMessage !== ''" class="alert alert-warning position-fixed top-50 start-50 translate-middle">
         <span>{{ confirmMessage }}</span>
     </div>
 
@@ -142,6 +142,7 @@
         }
     }
 
+    //Toggling product details
     const toggleDetails = (id) => {
             if(displayDetails.value === false ) {
                 displayDetails.value = true
