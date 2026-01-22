@@ -36,15 +36,15 @@
             </div>
 
             <!-- Update category -->
-            <div class="mt-3 form-floating" @focusin="categoryInpActive = true" @focusout="categoryInpActive = false">
+            <div class="mt-3 form-floating">
                 <!-- Search bar -->
-                <input v-model="categoryInp" type="search" class="form-control" placeholder="Sök eller lägg till kategori" aria-label="Sök eller lägg till kategori" id="categoryInp" >
+                <input v-model="categoryInp" type="search" class="form-control" placeholder="Sök eller lägg till kategori" aria-label="Sök eller lägg till kategori" id="categoryInp" @input="searchCategory">
                 <label for="categoryInp" class="form-label">Kategori</label>
 
                 <!-- Search results -->
-                <ul v-if="categoryInpActive" class="list-group list-group-flush">
-                    <li v-for="(category, index) of categoryResult.slice(0,3)" class="list-group-item list-group-item-action"></li>
-                    <li class="list-group-item list-group-item-action">Lägg till kategori</li>
+                <ul class="list-group list-group-flush">
+                    <li v-for="(category, index) of categoryResult.slice(0,3)" :key="category.category_id" class="list-group-item list-group-item-action" @click="setCategory(category.category_id, category.category_name)">{{ category.category_name }}</li>
+                    <li v-if="noMatch" class="list-group-item list-group-item-action" @click="addCategory">Lägg till kategori</li>
                 </ul>
             </div>
 
@@ -79,10 +79,8 @@
                 </div>
             </div>
 
-
             <div cass="container">   
                 <div class="row">
-
                     <!-- Update amount -->
                     <div class="col-12 col-md-6">
                         <div class="input-group form-floating mt-3">
@@ -108,7 +106,7 @@
         <div class="modal-footer">
             <hr>
             <p v-if="errorMessage !== ''">{{ errorMessage }}</p>
-            <button type="button" class="btn btn-warning float-end" @click="update">Uppdatera</button>
+            <button type="button" class="btn btn-warning float-end" @click="updateProduct">Uppdatera</button>
         </div>
     </div>
 </template>
@@ -116,6 +114,8 @@
 <script setup>
     //Imports
     import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import productService from '../../services/product.service';
 
     onMounted(() => {
         getShelfs()
@@ -128,52 +128,148 @@
     //Emits
     const emits = defineEmits(["updatedProduct", "confirmMessage"])
 
+    //Variables
+    const router = useRouter()
+
     //Input variables
     const nameInp = ref(props.productDetails.name)
-    const descrInp = ref(props.productDetails.description)
+    const descrInp = ref(props.productDetails.descr)
     const labelInp = ref(props.productDetails.label)
-    const categoryInp = ref(props.productDetails.category)
+    const categoryInp = ref("")
     const priceInp = ref(props.productDetails.price)
     const amountInp = ref(props.productDetails.amount)
     const statusInp = ref(props.productDetails.status)
-    const shelfInp = ref(props.productDetails.shelf)
+    const shelfInp = ref("")
 
+    const noMatch = ref(false)
     const shelfs = ref([])
-    const categoryInpActive = ref(false)
     const allCategories = ref([])
     const categoryResult = ref([])
+    const categoryId = ref(null)
 
     const errorMessage = ref("")
 
     //Getting shelfs
     const getShelfs = async() => {
-        console.log("Updating getting-shelfs-function...")
+        const result = await productService.getShelves()
+
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+
+        shelfs.value = result
+
+        //Setting default shelf
+        for(const shelf of shelfs.value) {
+            if(shelf.shelf === props.productDetails.shelf) {
+                return shelfInp.value = shelf.shelf_id
+            }
+        }
     }
 
     //Getting categories
     const getCategories = async() => {
-        console.log("Updating getting-shelfs-function...")
+        const result = await productService.getCategories()
+
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+
+        allCategories.value = result
+
+        //Setting default category
+        for(const category of allCategories.value) {
+            if(category.category_name === props.productDetails.category) {
+                categoryInp.value = category.category_name
+                categoryId.value = category.category_id
+                return
+            }
+        }
+    }
+
+    //Searching categories
+    const searchCategory = () => {
+
+        //Resetting results
+        if(categoryInp === "") return categoryResult.value = [];
+
+        //Filtering
+        categoryResult.value = allCategories.value.filter((category) => {
+            return category.category_name.toLowerCase().includes(categoryInp.value.toLocaleLowerCase())
+        })
+
+        if(categoryResult.value.length === 0) {
+            noMatch.value = true
+        } else {
+            noMatch.value = false
+        }
+    }
+
+    //Setting chosen category
+    const setCategory = (id, name) => {
+        categoryId.value = id
+        categoryInp.value = name
+        categoryResult.value = []
+    }
+
+    //Adding new category
+    const addCategory = async() => {
+        const newCategory = {
+            category_name: categoryInp.value
+        }
+
+        const result = await productService.addCategory(newCategory)
+
+        if(result === false) {
+            return console.log("kika häääär")                                              //KONTROLLER ALLA FELHANTERINGAR
+        }
+        
+        setCategory(result[0].category_id, result[0].category_name)
+        noMatch.value = false
     }
 
     //Updating product
-    const update = async() => {
+    const updateProduct = async() => {
         const errors = []
+
+        console.log(props.productDetails)
 
         if(statusInp.value !== props.productDetails.status || amountInp.value !== props.productDetails.amount) updateStock();
 
         if(nameInp.value === "") errors.push("produktnamn");
         if(descrInp.value === "") errors.push("beskrivning");
         if(labelInp.value === "") errors.push("märke");
-        if(categoryInp.value === "") errors.push("kategori");
+        if(categoryId.value == null) errors.push("kategori");
 
         if(errors.length > 0) {
             const errorsStr = errors.join(", ");
             return errorMessage.value = "Du måste ange <strong>" + errorsStr + "</strong>.";
         }
 
+        const newProduct = {
+           ean_code: props.productDetails.code,
+           product_name: nameInp.value,
+           label: labelInp.value,
+           description: descrInp.value,
+           price: priceInp.value,
+           shelf_id: shelfInp.value,
+           category_id: categoryId.value
+        }
+
+        const result = await productService.updateProduct(props.productDetails.id , newProduct)
+
+        console.log(result)
+
+        if(result === false) {
+            return console.log("kika häääär")                                              //KONTROLLER ALLA FELHANTERINGAR
+        }
 
         emits("confirmMessage","Produkten är uppdaterad")
         emits("updatedProduct", null)
+
+    }
+
+    const updateStock = async() => {
 
     }
 

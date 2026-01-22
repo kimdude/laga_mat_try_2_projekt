@@ -22,12 +22,12 @@
         <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>
 
         <!-- Table of products -->
-        <ProductTable v-if="!displayForm" :shortcut="true" />   
+        <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails"/>   
 
         <!-- Modal with product details -->
         <div class="modal" id="modalDetails">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <ProductItem v-if="displayDetails" @edit-product="(details) => productDetails = details" @remove-product="toggleConfirm" :shortcut="true" :product-id="productId"/>
+                <ProductItem v-if="displayDetails" @remove-product="toggleConfirm" :shortcut="true" :product-id="productId" @toggle-details="toggleDetails"/>
             </div>
         </div>
 
@@ -61,7 +61,6 @@
     const displayForm = ref(false)
 
     //Product details variables
-    const productDetails = ref({})
     const productId = ref(null)
     const displayDetails = ref(false)
 
@@ -123,6 +122,19 @@
         }
 
         setTitle()
+    }
+
+    //Toggle details
+    const toggleDetails = (id) => {
+        if(displayDetails.value === false) {
+            displayDetails.value = true
+            productId.value = id
+
+        } else {
+            displayDetails.value = false
+            productId.value = null
+
+        }
     }
 
     //Toggling confirm-message
