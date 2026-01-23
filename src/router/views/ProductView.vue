@@ -35,7 +35,7 @@
         <ProductFilter v-if="displayFilter" class="mb-4"/>
 
         <!-- Table of products -->
-        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm"/>  
+        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" :search-term="searchTerm"/>  
 
         <!-- Modal with product details -->
         <div class="modal" ref="modalDetails" id="modalDetails">
@@ -79,12 +79,6 @@
 
         //Creating new modal instance for details modal
         detailsFunctions = new Modal(modalDetails.value)
-
-        console.log("edit: ")
-        console.log(modalEdit.value)
-
-        console.log("details: ")
-        console.log(modalDetails.value)
     })
 
     //Emits

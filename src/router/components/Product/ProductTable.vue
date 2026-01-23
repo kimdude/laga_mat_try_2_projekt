@@ -139,8 +139,17 @@
                                                                                                         //EMIT THEM
     }
 
+    //Searching for product
     const searchProduct = () => {
-
+        if(props.searchTerm === "") {
+            loadProducts()
+            return
+        }
+        
+        //Fitlering
+        productsList.value = allProducts.value.filter((product) => {
+            return product.product_name.toLowerCase().includes(props.searchTerm.toLowerCase()) || product.ean_code.toLowerCase().includes(props.searchTerm.toLowerCase)
+        })
     }
 
     //Filtering products
