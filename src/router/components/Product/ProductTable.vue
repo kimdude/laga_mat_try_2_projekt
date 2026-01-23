@@ -33,7 +33,8 @@
                 <!-- Status with quick-update form -->
                 <td>
                     <!-- Status -->
-                    <span v-if="updatingStock !== product.product_id" @click="toggleInputs(product.product_id, product.amount, product.status)">{{ product.status }}</span>
+                    <span v-if="updatingStock !== product.product_id && product.amount > 3 || updatingStock !== product.product_id && product.status === 'Beställd'" @click="toggleInputs(product.product_id, product.amount, product.status)">{{ product.status }}</span>
+                    <span v-if="updatingStock !== product.product_id && product.amount <= 3 && product.status !== 'Beställd'" @click="toggleInputs(product.product_id, product.amount, product.status)" class="badge text-bg-warning">{{ product.status }}</span>
                     
                     <!-- status input -->
                     <select v-if="updatingStock === product.product_id" v-model="statusInp" class="form-select form-select-sm" id="statusInp">
@@ -50,6 +51,10 @@
             </tr>
         </tbody>
     </table>
+    <!-- Loading icon -->
+    <div v-if="loading" class="spinner-border text-warning d-block mx-auto" role="status">
+        <span class="visually-hidden">Laddar...</span>
+    </div>
 </template>
 
 <script setup>
@@ -58,6 +63,8 @@
     import productService from '../../services/product.service';
 
     onMounted(() => {
+
+        loading.value = true
         getAllProducts()
     })
 
@@ -65,7 +72,7 @@
     const props = defineProps(["shortcut", "filters", "searchTerm"])
 
     //Emits
-    const emits = defineEmits(["productDetails", "filterOptions"])
+    const emits = defineEmits(["productDetails", "filterOptions", "confirm"])
 
     //Variables
     const router = useRouter()
@@ -75,6 +82,7 @@
     const statusInp = ref("")
 
     //Reactive variables
+    const loading = ref(false)
     const productsList = ref([])
     const allProducts = ref([])
     const labels = ref([])
@@ -107,13 +115,18 @@
 
         loadProducts()
         createFilters()
+
+        //Hiding loading-icon
+        loading.value = false
     }
 
     //Filtering for products that are low in stock
     const filterLowStock = () => {
 
+        productsList.value = []
+
         for(const product of allProducts.value) {
-            if(product.amount < 3) productsList.value.push(product)
+            if(product.amount < 3 && product.status !== "Beställd") productsList.value.push(product)
         }
 
     }
@@ -190,15 +203,36 @@
     }
 
     //Updating stock
-    const updateStock = async(id, status, amount) => {
+    const updateStock = async(id, oldStatus, oldAmount) => {
 
         updatingStock.value = null
-        const newStock = {
-            product_id: id,
-            status: status,
-            amount: amount
+        if(statusInp.value === oldStatus && amountInp.value === oldAmount) return
+
+        //Validating status
+        let status;
+
+        if(amountInp.value === 0 && statusInp.value === "I lager"){ 
+            status = "Slut" 
+        } else if(amountInp.value > 0 && statusInp.value === "Slut"){ 
+            status = "I lager"
+        } else {
+            status = statusInp.value
         }
 
+        const newStock = {
+            status: status,
+            amount: amountInp.value
+        }
+
+        const result = await productService.updateStock(id, newStock)
+
+        //invalid token
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+        
+        getAllProducts()
+        emits("confirm", "Produkten har uppdaterats")
     }
 
     //Watchers

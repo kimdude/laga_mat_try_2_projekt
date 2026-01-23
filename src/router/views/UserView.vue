@@ -1,6 +1,18 @@
 <template>
-    <!-- Log out-->
-    <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="d-block ms-auto" @click="logout">
+
+    <div class="d-flex position-fixed top-0 end-0 p-2 z-3">
+
+        <!-- Setting-->
+        <div>
+            <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
+            <ul v-if="displaySetting" class="list-group">
+                <li class="list-group-item list-group-item-action">Ändra lösenord</li>
+            </ul>
+        </div>
+
+        <!-- Log out-->
+        <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="ms-3" @click="logout">
+    </div>
 
     <!-- Section about logged-in user -->
     <section class="p-4 m-4 text-center">
@@ -63,6 +75,7 @@
     const router = useRouter()
 
     //Reactive variables
+    const displaySetting = ref(false)
     const userModal = useTemplateRef("userModal")
     let modalFunctions
 
@@ -130,8 +143,13 @@
         router.push({ name: "login" })
     }
 
+    const toggleSettings = () => {
+        if(displaySetting.value === false) displaySetting.value = true
+        else displaySetting.value = false
+    }
+
 </script>
 
 <style scoped>
-    img:hover { cursor: pointer; }
+    img:hover, li:hover { cursor: pointer; }
 </style>

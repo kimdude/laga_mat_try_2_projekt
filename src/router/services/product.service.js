@@ -1,13 +1,14 @@
 "use strict"
 
-//Getting token
-const token = localStorage.getItem("token")
-
 /* API-calls for product-routes */
 export default {
     
     //Getting all products
     async getProducts() {
+
+        //Getting token inside every function, because upon login the function uses old token
+        const token = localStorage.getItem("token")
+        
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products", {
                 method: "GET",
@@ -32,6 +33,10 @@ export default {
 
     //Getting all shelves
     async getShelves() {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/shelves", {
                 method: "GET",
@@ -56,6 +61,9 @@ export default {
 
     //Getting all categories
     async getCategories() {
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/categories", {
                 method: "GET",
@@ -80,6 +88,10 @@ export default {
 
     //Getting specific product
     async getProduct(id) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id, {
                 method: "GET",
@@ -104,6 +116,10 @@ export default {
 
     //Adding product
     async AddProduct(productObj) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products", {
                 method: "POST",
@@ -116,20 +132,35 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ett fel uppstod.")
+                throw new Error("Ett fel uppstod", { cause: result.status })
             }
 
             const data = await result.json()
             return data
 
         } catch(error) {
-            console.log(error)
-            return false //KOLLA TP AV FEL
+
+            //Duplicates
+            if(error.cause === 409) {
+                return "Produkt finns redan. Kontrollera produktnamn och EAN-kod."
+            }
+
+            //Invalid token
+            if(error.cause === 401) {
+                return false
+            }
+
+            //Unexpected errors
+            return "Ett fel har uppstått. Prova igen senare."
         }
     },
 
     //Updating stock-info
     async updateStock(id, stockObj) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id + "/stock", {
                 method: "PUT",
@@ -142,20 +173,23 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ogiltig token")
+                throw new Error("Ett fel uppstod", { cause: result.status })
             }
 
             const data = await result.json()
             return data
 
         } catch(error) {
-            console.log(error)
-            return false //KOLLA TP AV FEL
+            return false
         }
     },
 
     //Updating product
     async updateProduct(id, productObj) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id , {
                 method: "PUT",
@@ -168,20 +202,29 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ogiltig token")
+                throw new Error("Ett fel uppstod", { cause: result.status })
             }
 
             const data = await result.json()
             return data
 
         } catch(error) {
-            console.log(error)
-            return false //KOLLA TP AV FEL
+            //Invalid token
+            if(error.cause === 401) {
+                return false
+            }
+
+            //Unexpected errors
+            return "Ett fel har uppstått. Prova igen senare."
         }
     },
 
     //Deleting product
     async deleteProduct(id) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id, {
                 method: "DELETE",
@@ -205,7 +248,13 @@ export default {
         }
     },
 
+
+    //Adding category
     async addCategory(categoryObj) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
         try{
             const result = await fetch("https://projekt-try2-backend.onrender.com/categories", {
                 method: "POST",
@@ -218,15 +267,19 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ett fel uppstod.")
+                throw new Error("Ett fel uppstod", { cause: result.status })
             }
 
             const data = await result.json() 
             return data
 
         } catch(error) {
-            console.log(error)
-            return false //KOLLA TP AV FEL
+
+            if(error.cause === 401) {
+                return false
+            }
+
+            return "Ett fel uppstod. Prova igen senare." 
         }
     }
 }

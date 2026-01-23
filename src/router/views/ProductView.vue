@@ -1,4 +1,12 @@
 <template>
+    <!-- Setting-->
+    <div class="position-fixed top-0 end-0 p-2 z-3">
+        <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
+        <ul v-if="displaySetting" class="list-group">
+            <li class="list-group-item list-group-item-action" >Hantera kategorier</li>
+        </ul>
+    </div>
+
     <!-- Search bar -->
     <div class="mt-4 pt-4 pt-md-0">
         <ProductSearch @search-term="(term) => searchTerm = term"/>
@@ -27,10 +35,10 @@
         <ProductFilter v-if="displayFilter" class="mb-4"/>
 
         <!-- Table of products -->
-        <ProductTable :shortcut="false" @product-details="toggleDetails"/>  
+        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm"/>  
 
         <!-- Modal with product details -->
-        <div class="modal" id="modalDetails">
+        <div class="modal" ref="modalDetails" id="modalDetails">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <ProductItem v-if="displayDetails" @edit-product="toggleEdit" @toggle-details="toggleDetails" @confirm-message="toggleConfirm" :shortcut="false" :product-id="productId"/>
             </div>
@@ -68,6 +76,15 @@
 
         //Creating new modal instance for edit modal
         modalFunctions = new Modal(modalEdit.value)
+
+        //Creating new modal instance for details modal
+        detailsFunctions = new Modal(modalDetails.value)
+
+        console.log("edit: ")
+        console.log(modalEdit.value)
+
+        console.log("details: ")
+        console.log(modalDetails.value)
     })
 
     //Emits
@@ -75,6 +92,7 @@
 
     //Reactive variables
     const confirmMessage = ref("")
+    const displaySetting = ref(false)
 
     //SearchVariables
     const searchTerm = ref("")
@@ -93,7 +111,10 @@
     //Product details variables
     const productDetails = ref({})
     const productId = ref(null)
+
     const displayDetails = ref(false)
+    const modalDetails = useTemplateRef("modalDetails")
+    let detailsFunctions
 
     //Toggle add form
     const toggleAdd = () => {
@@ -128,9 +149,13 @@
             //Displaying edit modal
             productDetails.value = details
             displayEdit.value = true
+
+            
             modalFunctions.show()
 
+            //Hiding details
             displayDetails.value = false
+            detailsFunctions.hide()
 
         } else {
 
@@ -145,13 +170,20 @@
     //Toggling product details
     const toggleDetails = (id) => {
             if(displayDetails.value === false ) {
-                displayDetails.value = true
                 productId.value = id
+                
+                displayDetails.value = true
+                detailsFunctions.show()
 
             } else {
                 displayDetails.value = false
-                productId.value = id
+                detailsFunctions.hide()
             }
+    }
+
+    const toggleSettings = () => {
+        if(displaySetting.value === false) displaySetting.value = true
+        else displaySetting.value = false
     }
 
 </script>
@@ -161,7 +193,7 @@
         width: 35px;
     }
 
-    img:hover {
+    img:hover, li:hover {
         cursor: pointer;
     }
 

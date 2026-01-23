@@ -50,7 +50,7 @@
 
             <h3 class="mt-4">Lager info</h3>
 
-            <div cass="container mt-3">
+            <div class="container mt-3">
                 <div class="row">
 
                     <!-- Update shelf -->
@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            <div cass="container">   
+            <div class="container">   
                 <div class="row">
                     <!-- Update amount -->
                     <div class="col-12 col-md-6">
@@ -105,7 +105,7 @@
         <!-- Footer -->
         <div class="modal-footer">
             <hr>
-            <p v-if="errorMessage !== ''">{{ errorMessage }}</p>
+            <p v-if="errorMessage !== ''" class="alert alert-warning">{{ errorMessage }}</p>
             <button type="button" class="btn btn-warning float-end" @click="updateProduct">Uppdatera</button>
         </div>
     </div>
@@ -190,8 +190,10 @@
     //Searching categories
     const searchCategory = () => {
 
+        categoryId.value = null
+
         //Resetting results
-        if(categoryInp === "") return categoryResult.value = [];
+        if(categoryInp.value === "") return categoryResult.value = [];
 
         //Filtering
         categoryResult.value = allCategories.value.filter((category) => {
@@ -220,8 +222,13 @@
 
         const result = await productService.addCategory(newCategory)
 
+        //Checking result
         if(result === false) {
-            return console.log("kika häääär")                                              //KONTROLLER ALLA FELHANTERINGAR
+            router.push({ name: "login" })                                 
+        }
+
+        if(result === "Ett fel uppstod vid skapande av ny kategori. Prova igen senare.") {
+            return errorMessage.value = result
         }
         
         setCategory(result[0].category_id, result[0].category_name)
@@ -230,21 +237,26 @@
 
     //Updating product
     const updateProduct = async() => {
+
         const errors = []
 
-        console.log(props.productDetails)
-
+        //Checking if stock has changed
         if(statusInp.value !== props.productDetails.status || amountInp.value !== props.productDetails.amount) updateStock();
 
+        //Validating inputs
         if(nameInp.value === "") errors.push("produktnamn");
         if(descrInp.value === "") errors.push("beskrivning");
         if(labelInp.value === "") errors.push("märke");
-        if(categoryId.value == null) errors.push("kategori");
+        if(categoryInp.value == "") errors.push("kategori");
 
         if(errors.length > 0) {
             const errorsStr = errors.join(", ");
             return errorMessage.value = "Du måste ange <strong>" + errorsStr + "</strong>.";
         }
+
+        //Validating category id with given name
+        if(errorMessage.value === "Ett fel uppstod vid skapande av ny kategori. Prova igen senare.") return
+        if(categoryId.value == null) return errorMessage.value = "Välj en kategori från listan eller välj 'lägg till kategori'."
 
         const newProduct = {
            ean_code: props.productDetails.code,
@@ -258,10 +270,12 @@
 
         const result = await productService.updateProduct(props.productDetails.id , newProduct)
 
-        console.log(result)
-
         if(result === false) {
-            return console.log("kika häääär")                                              //KONTROLLER ALLA FELHANTERINGAR
+            router.push({ name: "login" })
+        }
+
+        if(result === "Ett fel uppstod. Prova igen senare.") {
+            errorMessage.value = result
         }
 
         emits("confirmMessage","Produkten är uppdaterad")
@@ -271,6 +285,30 @@
 
     const updateStock = async() => {
 
+        //Validating status
+        let status;
+
+        if(amountInp.value === 0 && statusInp.value === "I lager"){ 
+            status = "Slut" 
+        } else if(amountInp.value > 0 && statusInp.value === "Slut"){ 
+            status = "I lager"
+        } else {
+            status = statusInp.value
+        }
+
+        //Updating stock
+        const newStock = {
+            status: status,
+            amount: amountInp.value
+        }
+
+        const result = await productService.updateStock(props.productDetails.id, newStock)
+
+        //Invalid token
+        if(result === false) {
+            router.push({ name: "login" })
+        }
+                                                            //LADDA OM LISTA
     }
 
 </script>

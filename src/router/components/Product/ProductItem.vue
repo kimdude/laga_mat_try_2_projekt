@@ -39,8 +39,8 @@
         <!-- Footer -->
         <div class="modal-footer">
             <hr>
-            <button v-if="!props.shortcut" type="button" class="btn btn-info float-end" @click="edit" data-bs-dismiss="modal">Redigera</button>
-            <button type="button" class="btn btn-warning float-end mx-2" @click="remove" data-bs-dismiss="modal">Ta bort</button>
+            <button v-if="!props.shortcut" type="button" class="btn btn-info float-end" @click="edit">Redigera</button>
+            <button type="button" class="btn btn-warning float-end mx-2" @click="remove">Ta bort</button>
         </div>
     </div>
 </template>
@@ -52,9 +52,7 @@
     import productService from '../../services/product.service';
 
     onMounted(() => {
-        if(props.productId != null) {
             getProduct()
-        }
     })
 
     //Props
@@ -72,7 +70,7 @@
         const result = await productService.getProduct(props.productId)
 
         if(result === false) {
-            router.push({ name: login })
+            router.push({ name: "login" })
         }
 
         product.value = result
@@ -112,9 +110,12 @@
     }
 
     //Removing product
-    const remove = () => {
-        console.log("under utveckling...")
+    const remove = async() => {
+        const result = await productService.deleteProduct(props.productId)
 
+        if(result === false) {
+            console.log(result)
+        }
         emits("confirmMessage","Produkten har tagits bort")
         emits("toggleDetails", null)
     }

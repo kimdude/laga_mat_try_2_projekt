@@ -51,6 +51,7 @@ router.beforeEach((to, from) => {
   //Checking auth
   const canAccess = authService.authUser()
 
+  //Redirecting
   if(to.name !== "login" && !canAccess){ 
     return {
       path: "/login",
