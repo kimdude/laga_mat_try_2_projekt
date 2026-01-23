@@ -29,9 +29,6 @@
     const searchInp = ref("")
 
     const search = () => {
-
-        if(searchInp === "") return;
-
         emit("searchTerm", searchInp.value)
 
     }

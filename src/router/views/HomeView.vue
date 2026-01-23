@@ -16,18 +16,18 @@
         <h2>{{ title }}</h2>
 
         <!-- Add product form -->
-        <ProductForm v-if="displayForm" @product-added="toggleConfirm"/>
+        <ProductForm v-if="displayForm" @product-added="toggleAddBtn" @confirm-message="toggleConfirm"/>
 
         <!-- Search bar -->
-        <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term" :search-term="searchTerm"/>
+        <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>
 
         <!-- Table of products -->
-        <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails"/>   
+        <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails" :search-term="searchTerm" :reload="loadList"/>   
 
         <!-- Modal with product details -->
-        <div class="modal" id="modalDetails">
+        <div class="modal" ref="modalDetails" id="modalDetails">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <ProductItem v-if="displayDetails" @remove-product="toggleConfirm" :shortcut="true" :product-id="productId" @toggle-details="toggleDetails"/>
+                <ProductItem v-if="displayDetails" @confirm-message="toggleConfirm" :shortcut="true" :product-id="productId" @toggle-details="toggleDetails"/>
             </div>
         </div>
 
@@ -42,14 +42,26 @@
 
 <script setup>
     //Imports
-    import { ref, onMounted } from 'vue';
+    import { ref, useTemplateRef, onMounted } from 'vue';
+    import { Modal } from 'bootstrap';
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductSearch from '../components/Product/ProductSearch.vue';
     import ProductItem from '../components/Product/ProductItem.vue';
 
+    onMounted(() => {
+
+        //Triggering emit to display nav
+        emits("displayNav", true)
+
+        //Creating new modal instance for details modal
+        detailsFunctions = new Modal(modalDetails.value)
+
+    })
+
     //Reactive variables
     const confirmMessage = ref("")
+    const loadList = ref(0)
 
     //Search product variables
     const pressedSearch = ref(false)
@@ -62,17 +74,12 @@
 
     //Product details variables
     const productId = ref(null)
-    const displayDetails = ref(false)
+    const displayDetails = ref(false)    
+    const modalDetails = useTemplateRef("modalDetails")
+    let detailsFunctions
 
     //Table section variables
     const title= ref("Få i lager")
-
-    onMounted(() => {
-
-        //Triggering emit to display nav
-        emits("displayNav", true);
-
-    })
 
     //Emits
     const emits = defineEmits(["displayNav"]);
@@ -86,7 +93,7 @@
     }
 
     //Toggle product add-shortcut button
-    const toggleSearchBtn = () => {
+    const toggleSearchBtn = async() => {
 
         //Setting aria-pressed attribute
         if(pressedSearch.value === false) { 
@@ -100,6 +107,8 @@
         } else { 
             pressedSearch.value = false 
             displaySearch.value = false
+            searchTerm.value = ""
+
         }
 
         setTitle()
@@ -110,7 +119,9 @@
 
         //Setting aria-pressed attribute
         if(pressedAdd.value === false) {
+            //Hiding search
             pressedSearch.value = false 
+            displaySearch.value = false
 
             //Displaying form
             pressedAdd.value = true
@@ -129,10 +140,12 @@
         if(displayDetails.value === false) {
             displayDetails.value = true
             productId.value = id
+            detailsFunctions.show()
 
         } else {
             displayDetails.value = false
             productId.value = null
+            detailsFunctions.hide()
 
         }
     }
@@ -144,9 +157,8 @@
         confirmMessage.value = message
         setTimeout(() => confirmMessage.value = "", 5000);
 
-        //Hiding add product form
-        displayForm.value = false
-        toggleAddBtn()
+        loadList.value++
+
     }
 
 </script>

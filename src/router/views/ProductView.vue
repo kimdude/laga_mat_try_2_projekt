@@ -35,7 +35,7 @@
         <ProductFilter v-if="displayFilter" :label-options="allLabels" @filters="(filterObj) => filters = filterObj" class="mb-4"/>
 
         <!-- Table of products -->
-        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" @filter-options="(labels) => allLabels = labels" :filters="filters" :search-term="searchTerm"/>  
+        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" @filter-options="(labels) => allLabels = labels" :reload="loadList" :filters="filters" :search-term="searchTerm"/>  
 
         <!-- Modal with product details -->
         <div class="modal" ref="modalDetails" id="modalDetails">
@@ -87,6 +87,7 @@
     //Reactive variables
     const confirmMessage = ref("")
     const displaySetting = ref(false)
+    const loadList = ref(0)
 
     //SearchVariables
     const searchTerm = ref("")
@@ -126,6 +127,8 @@
     const toggleConfirm = (message) => {
         confirmMessage.value = message
         setTimeout(() => confirmMessage.value = "", 5000);
+
+        loadList.value++
     }
 
     //Toggle filter

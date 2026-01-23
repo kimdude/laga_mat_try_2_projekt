@@ -69,7 +69,7 @@
     })
 
     //Props
-    const props = defineProps(["shortcut", "filters", "searchTerm"])
+    const props = defineProps(["shortcut", "filters", "searchTerm", "reload"])
 
     //Emits
     const emits = defineEmits(["productDetails", "filterOptions", "confirm"])
@@ -82,7 +82,7 @@
     const statusInp = ref("")
 
     //Reactive variables
-    const loading = ref(false)
+    const loading = ref(false) //Display loading icon
     const productsList = ref([])
     const allProducts = ref([])
     const labels = ref([])
@@ -98,6 +98,7 @@
 
     //Setting productlist
     const loadProducts = () => {
+        console.log("I'm doin it")
         if(props.shortcut) filterLowStock()
         else productsList.value = allProducts.value
     }
@@ -126,7 +127,7 @@
         productsList.value = []
 
         for(const product of allProducts.value) {
-            if(product.amount < 3 && product.status !== "Beställd") productsList.value.push(product)
+            if(product.amount <= 3 && product.status !== "Beställd") productsList.value.push(product)
         }
 
     }
@@ -245,8 +246,9 @@
     }
 
     //Watchers
-    watch(() => props.searchTerm, searchProduct, { immidiate: true })
+    watch(() => props.searchTerm, searchProduct)
     watch(() => props.filters, filter)
+    watch(() => props.reload, getAllProducts)
 
 </script>
 
