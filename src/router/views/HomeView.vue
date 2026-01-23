@@ -19,7 +19,7 @@
         <ProductForm v-if="displayForm" @product-added="toggleConfirm"/>
 
         <!-- Search bar -->
-        <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>
+        <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term" :search-term="searchTerm"/>
 
         <!-- Table of products -->
         <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails"/>   
@@ -42,7 +42,7 @@
 
 <script setup>
     //Imports
-    import { ref, watch, onMounted } from 'vue';
+    import { ref, onMounted } from 'vue';
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
     import ProductSearch from '../components/Product/ProductSearch.vue';

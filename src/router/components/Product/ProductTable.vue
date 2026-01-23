@@ -136,7 +136,7 @@
         const allLabels = allProducts.value.map((product) => product.label)
         labels.value = allLabels.filter((label, index) => allLabels.indexOf(label) === index)
 
-                                                                                                        //EMIT THEM
+        emits("filterOptions", labels)
     }
 
     //Searching for product
@@ -158,7 +158,7 @@
 
         //Filtering categories
         if(props.filters.category !== "") {
-            productsList.value = productsList.value.filter((product, index) => product.category === props.filters.category)
+            productsList.value = productsList.value.filter((product, index) => product.category_id === props.filters.category)
         }
 
         //Filtering labels

@@ -32,10 +32,10 @@
         <ProductForm v-if="displayAdd" class="mb-4" @product-added="toggleAdd" @confirm-message="toggleConfirm" />
 
         <!-- Form to filter products -->
-        <ProductFilter v-if="displayFilter" class="mb-4"/>
+        <ProductFilter v-if="displayFilter" :label-options="allLabels" @filters="(filterObj) => filters = filterObj" class="mb-4"/>
 
         <!-- Table of products -->
-        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" :search-term="searchTerm"/>  
+        <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" @filter-options="(labels) => allLabels = labels" :filters="filters" :search-term="searchTerm"/>  
 
         <!-- Modal with product details -->
         <div class="modal" ref="modalDetails" id="modalDetails">
@@ -93,6 +93,8 @@
 
     //Filter variables
     const displayFilter = ref(false)
+    const allLabels = ref([])
+    const filters = ref({})
 
     //Add variables
     const displayAdd = ref(false)
@@ -175,6 +177,7 @@
             }
     }
 
+    //Toggling settings
     const toggleSettings = () => {
         if(displaySetting.value === false) displaySetting.value = true
         else displaySetting.value = false
