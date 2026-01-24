@@ -6,7 +6,7 @@
         <div>
             <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
             <ul v-if="displaySetting" class="list-group">
-                <li class="list-group-item list-group-item-action">Ändra lösenord</li>
+                <li class="list-group-item list-group-item-action" @click="toggleUserSettings" data-bs-toggle="modal" data-bs-target="#modalSettings">Ändra lösenord</li>
             </ul>
         </div>
 
@@ -44,6 +44,13 @@
         </div>
     </div>
 
+    <!-- Modal with settings -->
+    <div class="modal" id="modalSettings">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <UserSettings v-if="displayUserSettings" @toggle-settings="toggleUserSettings"/>
+        </div>
+    </div>
+
     <!-- Confirmation toast -->
     <div v-if="confirmMessage !== ''" class="alert alert-warning position-fixed top-50 start-50 translate-middle">
         <span>{{ confirmMessage }}</span>
@@ -59,6 +66,7 @@
     import UserItem from '../components/User/UserItem.vue';
     import UserForm from '../components/User/UserForm.vue';
     import userService from '../services/user.service';
+    import UserSettings from '../components/User/UserSettings.vue';
 
     onMounted(() => {
         emits("displayNav", true)
@@ -76,6 +84,8 @@
 
     //Reactive variables
     const displaySetting = ref(false)
+    const displayUserSettings = ref(false)
+
     const userModal = useTemplateRef("userModal")
     let modalFunctions
 
@@ -143,9 +153,21 @@
         router.push({ name: "login" })
     }
 
+    //Toggling settings nav
     const toggleSettings = () => {
         if(displaySetting.value === false) displaySetting.value = true
         else displaySetting.value = false
+    }
+
+    //Toggling modal with settings
+    const toggleUserSettings = () => {
+        if(displayUserSettings.value === false) {
+            displayUserSettings.value = true
+            toggleSettings()
+            
+        } else {
+            displayUserSettings.value = false
+        }
     }
 
 </script>

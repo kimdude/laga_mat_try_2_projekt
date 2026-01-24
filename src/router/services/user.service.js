@@ -83,13 +83,20 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ett fel uppstod. Prova igen senare.")
+                throw new Error("Ett fel uppstod. Prova igen senare.", { cause: result.status })
             }
 
             return true
 
         } catch(error) {    
-            console.log(error) //DEFINIERA FEL, KOLLA OM DET ÄR TOKEN SOM GÅTT UT
+
+            //Invalid password
+            if(error.cause === 401) {
+                return "Felaktigt lösenord."
+            }
+            
+            //Unexpected errors
+            return false
         }
     },
 
