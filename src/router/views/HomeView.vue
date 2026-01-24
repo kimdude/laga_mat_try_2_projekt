@@ -16,7 +16,7 @@
         <h2>{{ title }}</h2>
 
         <!-- Add product form -->
-        <ProductForm v-if="displayForm" @product-added="toggleAddBtn" @confirm-message="toggleConfirm"/>
+        <ProductForm v-if="displayForm" class="mb-4" @product-added="toggleAddBtn" @confirm-message="toggleConfirm"/>
 
         <!-- Search bar -->
         <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>

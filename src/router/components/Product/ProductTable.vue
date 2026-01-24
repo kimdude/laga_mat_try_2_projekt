@@ -66,7 +66,7 @@
         <nav v-if="pagesArr.length > 0">
             <ul class="pagination">
                 <li v-for="(pages, index) of pagesArr" :key="index" class="page-item" @click="currentPage = pagesArr[index]">
-                    <span class="page-link" :class="{active: currentPage === pagesArr[index]}">{{ index +1 }}</span>
+                    <span class="page-link z-1" :class="{active: currentPage === pagesArr[index]}">{{ index +1 }}</span>
                 </li>
             </ul>
         </nav>
