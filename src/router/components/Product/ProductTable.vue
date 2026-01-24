@@ -148,7 +148,7 @@
     const getAllProducts = async() => {
         const result = await productService.getProducts()
 
-        //Error handling
+        //Invalid token
         if(result === false) {
             router.push({ name: "login" })
         }

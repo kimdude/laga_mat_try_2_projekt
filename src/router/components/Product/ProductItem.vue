@@ -10,7 +10,6 @@
                 <p class="col"> {{ product.description }} </p>
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="modal" @click="$emit('toggleDetails',null)"></button>
-            <hr>
         </div>
 
         <!-- Body -->
@@ -38,7 +37,6 @@
 
         <!-- Footer -->
         <div class="modal-footer">
-            <hr>
             <button v-if="!props.shortcut" type="button" class="btn btn-info float-end" @click="edit">Redigera</button>
             <button type="button" class="btn btn-warning float-end mx-2" @click="remove">Ta bort</button>
         </div>

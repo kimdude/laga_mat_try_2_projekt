@@ -1,9 +1,9 @@
 <template>
     <!-- Setting-->
     <div class="position-fixed top-0 end-0 p-2 z-3">
-        <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
+        <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="20" @click="toggleSettings">
         <ul v-if="displaySetting" class="list-group">
-            <li class="list-group-item list-group-item-action" >Hantera kategorier</li>
+            <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalSettings" @click="toggleCategorySettings">Hantera kategorier</li>
         </ul>
     </div>
 
@@ -51,9 +51,15 @@
             </div>
         </div>
 
+        <!-- Modal with settings -->
+        <div class="modal" id="modalSettings">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <ProductSettings v-if="displayCategorySettings" @toggle-settings="toggleCategorySettings"/>
+            </div>
+        </div>
     </section>
 
-    <!-- Confirmation toast -->
+    <!-- Confirmation alert -->
     <div v-if="confirmMessage !== ''" class="alert alert-warning position-fixed top-50 start-50 translate-middle">
         <span>{{ confirmMessage }}</span>
     </div>
@@ -70,6 +76,7 @@
     import ProductSearch from '../components/Product/ProductSearch.vue';
     import ProductItem from '../components/Product/ProductItem.vue';
     import ProductEdit from '../components/Product/ProductEdit.vue';
+    import ProductSettings from '../components/Product/ProductSettings.vue';
 
     onMounted(() => {
         emits("displayNav", true);
@@ -88,6 +95,8 @@
     const confirmMessage = ref("")
     const displaySetting = ref(false)
     const loadList = ref(0)
+
+    const displayCategorySettings = ref(false)
 
     //SearchVariables
     const searchTerm = ref("")
@@ -186,11 +195,21 @@
         else displaySetting.value = false
     }
 
+    //Toggling category settings
+    const toggleCategorySettings = () => {
+        if(displayCategorySettings.value === false) {
+            displayCategorySettings.value = true
+            toggleSettings()
+        } else {
+            displayCategorySettings.value = false
+        }
+    }
+
 </script>
 
 <style scoped>
     img {
-        width: 35px;
+        width: 30px;
     }
 
     img:hover, li:hover {

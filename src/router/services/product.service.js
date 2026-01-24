@@ -226,7 +226,7 @@ export default {
         const token = localStorage.getItem("token")
 
         try{
-            const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id, {
+            const result = await fetch("https://projekt-try2-backend.onrender.com/categories/" + id, {
                 method: "DELETE",
                 headers: {
                     "content-type": "application/json",
@@ -236,15 +236,14 @@ export default {
 
             //Checking result
             if(!result.ok) {
-                throw new Error("Ogiltig token")
+                throw new Error("Ett fel uppstod")
             }
 
             const data = await result.json()
             return data
 
         } catch(error) {
-            console.log(error)
-            return false //KOLLA TP AV FEL
+            return false
         }
     },
 
