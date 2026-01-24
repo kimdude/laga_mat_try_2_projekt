@@ -189,7 +189,7 @@
         const allLabels = allProducts.value.map((product) => product.label)
         labels.value = allLabels.filter((label, index) => allLabels.indexOf(label) === index)
 
-        emits("filterOptions", labels)
+        emits("filterOptions", labels.value)
     }
 
     //Searching for product
