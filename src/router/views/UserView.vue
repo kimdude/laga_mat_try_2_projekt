@@ -1,17 +1,21 @@
 <template>
 
-    <div class="d-flex position-fixed top-0 end-0 p-2 z-3">
+    <div class="container-fluid">
+        <div class="row">
 
-        <!-- Setting-->
-        <div>
-            <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
-            <ul v-if="displaySetting" class="list-group">
-                <li class="list-group-item list-group-item-action" @click="toggleUserSettings" data-bs-toggle="modal" data-bs-target="#modalSettings">Ändra lösenord</li>
-            </ul>
+            <!-- Setting-->
+            <div class="col d-flex flex-column">
+                <img src="../assets/settings_icon.svg" class="ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
+                <ul v-if="displaySetting" class="list-group ms-auto">
+                    <li class="list-group-item list-group-item-action" @click="toggleUserSettings" data-bs-toggle="modal" data-bs-target="#modalSettings">Ändra lösenord</li>
+                </ul>
+            </div>
+
+            <!-- Log out-->
+            <div class="col col-1">
+                <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="" @click="logout">
+            </div>
         </div>
-
-        <!-- Log out-->
-        <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="ms-3" @click="logout">
     </div>
 
     <!-- Section about logged-in user -->

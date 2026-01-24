@@ -13,7 +13,7 @@
 
   <!-- Logo on sm -->
   <div v-if="displayNav" class="position-relative d-md-none">
-    <img src="/src/router/assets/logo.svg" class="position-absolute top-0 start-0 p-2 z-3" width="90" alt="Logo">
+    <img src="/src/router/assets/logo.svg" class="position-fixed top-0 start-0 p-2 z-3" width="90" alt="Logo">
   </div>
 
   <!-- Grid -->
@@ -38,12 +38,6 @@
 <style scoped>
 
   /* Compensating media queries */
-
-  @media screen and (max-width: 768px) {
-    #main {
-      height: 100vh;
-    }
-  }
 
   @media screen and (min-width: 768px) {
 

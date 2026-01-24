@@ -1,10 +1,15 @@
 <template>
+
     <!-- Setting-->
-    <div class="position-fixed top-0 end-0 p-2 z-3">
-        <img src="../assets/settings_icon.svg" class="d-block ms-auto" alt="Inställnignar" title="Inställningar" width="20" @click="toggleSettings">
-        <ul v-if="displaySetting" class="list-group">
-            <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalSettings" @click="toggleCategorySettings">Hantera kategorier</li>
-        </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col d-flex flex-column">
+                <img src="../assets/settings_icon.svg" class="ms-auto" alt="Inställnignar" title="Inställningar" width="20" @click="toggleSettings">
+                <ul v-if="displaySetting" class="list-group ms-auto">
+                    <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalSettings" @click="toggleCategorySettings">Hantera kategorier</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- Search bar -->
