@@ -105,7 +105,7 @@
             router.push({ name: "login" })
         }
 
-        const catName = result.category.category_name
+        const catName = result.category_name
 
         toggleConfirm(`${catName} har tagits bort.`)
         toggleAlert()
