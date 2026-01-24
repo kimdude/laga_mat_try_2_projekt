@@ -98,7 +98,7 @@
     }
 
     const deleteCategory = async() => {
-        const result = await productService.deleteProduct(categoryId.value)
+        const result = await productService.deleteCategory(categoryId.value)
 
         //Invalid token
         if(result === false) {

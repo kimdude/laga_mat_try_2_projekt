@@ -226,7 +226,7 @@ export default {
         const token = localStorage.getItem("token")
 
         try{
-            const result = await fetch("https://projekt-try2-backend.onrender.com/categories/" + id, {
+            const result = await fetch("https://projekt-try2-backend.onrender.com/products/" + id, {
                 method: "DELETE",
                 headers: {
                     "content-type": "application/json",
@@ -279,6 +279,34 @@ export default {
             }
 
             return "Ett fel uppstod. Prova igen senare." 
+        }
+    },
+
+    //Deleting category
+    async deleteCategory(id) {
+
+        //Getting token
+        const token = localStorage.getItem("token")
+
+        try{
+            const result = await fetch("https://projekt-try2-backend.onrender.com/categories/" + id, {
+                method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": "Bearer " + token
+                }
+            })
+
+            //Checking result
+            if(!result.ok) {
+                throw new Error("Ett fel uppstod")
+            }
+
+            const data = await result.json()
+            return data
+
+        } catch(error) {
+            return false
         }
     }
 }
