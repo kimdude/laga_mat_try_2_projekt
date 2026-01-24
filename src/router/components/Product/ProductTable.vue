@@ -57,14 +57,20 @@
         <span class="visually-hidden">Laddar...</span>
     </div>
 
-    <!-- Pagination -->
-    <nav v-if="pagesArr.length > 0">
-        <ul class="pagination">
-            <li v-for="(pages, index) of pagesArr" :key="index" class="page-item" @click="currentPage = pagesArr[index]">
-                <span class="page-link" :class="{active: currentPage === pagesArr[index]}">{{ index +1 }}</span>
-            </li>
-        </ul>
-    </nav>
+    <!-- About results -->
+    <div class="d-flex justify-content-between">
+
+        <!-- Pagination -->
+        <nav v-if="pagesArr.length > 0">
+            <ul class="pagination">
+                <li v-for="(pages, index) of pagesArr" :key="index" class="page-item" @click="currentPage = pagesArr[index]">
+                    <span class="page-link" :class="{active: currentPage === pagesArr[index]}">{{ index +1 }}</span>
+                </li>
+            </ul>
+        </nav>
+
+        <span><em>Totalt {{ productsList.length }} produkter</em></span>
+    </div>
 </template>
 
 <script setup>

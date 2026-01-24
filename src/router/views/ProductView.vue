@@ -32,7 +32,7 @@
         <ProductForm v-if="displayAdd" class="mb-4" @product-added="toggleAdd" @confirm-message="toggleConfirm" />
 
         <!-- Form to filter products -->
-        <ProductFilter v-if="displayFilter" :label-options="allLabels" @filters="(filterObj) => filters = filterObj" class="mb-4"/>
+        <ProductFilter v-if="displayFilter" :label-options="allLabels" @filters="filter" class="mb-4"/>
 
         <!-- Table of products -->
         <ProductTable :shortcut="false" @product-details="toggleDetails" @confirm="toggleConfirm" @filter-options="(labels) => allLabels = labels" :reload="loadList" :filters="filters" :search-term="searchTerm"/>  
@@ -148,6 +148,11 @@
         } else { 
             displayFilter.value = false
         }
+    }
+
+    const filter = (filterObj) => {
+        filters.value = filterObj
+        toggleFilter()
     }
 
     //Toggle edit modal

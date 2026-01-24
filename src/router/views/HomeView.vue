@@ -123,6 +123,7 @@
             //Hiding search
             pressedSearch.value = false 
             displaySearch.value = false
+            searchTerm.value = ""
 
             //Displaying form
             pressedAdd.value = true
