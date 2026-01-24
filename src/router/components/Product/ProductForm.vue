@@ -235,5 +235,5 @@
 </script>
 
 <style scoped>
-    
+    li:hover { cursor: pointer; }
 </style>

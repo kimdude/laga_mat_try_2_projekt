@@ -22,7 +22,7 @@
         <ProductSearch v-if="displaySearch" @search-term="(term) => searchTerm = term"/>
 
         <!-- Table of products -->
-        <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails" :search-term="searchTerm" :reload="loadList"/>   
+        <ProductTable v-if="!displayForm" :shortcut="true" @product-details="toggleDetails" :search-term="searchTerm" :reload="loadList" @list-length="(length) => lowStockAmount = length"/>   
 
         <!-- Modal with product details -->
         <div class="modal" ref="modalDetails" id="modalDetails">
@@ -42,7 +42,7 @@
 
 <script setup>
     //Imports
-    import { ref, useTemplateRef, onMounted } from 'vue';
+    import { ref, useTemplateRef, onMounted, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import ProductTable from '../components/Product/ProductTable.vue';
     import ProductForm from '../components/Product/ProductForm.vue';
@@ -62,6 +62,7 @@
     //Reactive variables
     const confirmMessage = ref("")
     const loadList = ref(0)
+    const lowStockAmount = ref(0)
 
     //Search product variables
     const pressedSearch = ref(false)
@@ -89,7 +90,7 @@
         if(pressedSearch.value === true) return title.value = "Sök produkt"
         if(pressedAdd.value === true) return title.value = "Lägg till produkt"
        
-        title.value = "Få i lager"
+        title.value = `Få i lager (${lowStockAmount.value})`
     }
 
     //Toggle product add-shortcut button
@@ -160,6 +161,9 @@
         loadList.value++
 
     }
+
+    //Watchers
+    watch(() => lowStockAmount.value, setTitle)
 
 </script>
 

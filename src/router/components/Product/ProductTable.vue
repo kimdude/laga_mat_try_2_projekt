@@ -16,7 +16,7 @@
 
         <!-- Table body -->
         <tbody>
-            <tr v-for="product of productsList" :key="product.product_id">
+            <tr v-for="product of currentPage" :key="product.product_id">
                 <td @click="$emit('productDetails', product.product_id)" data-bs-toggle="modal" data-bs-target="#modalDetails">{{ product.product_name }}</td>
                 <td @click="$emit('productDetails', product.product_id)" data-bs-toggle="modal" data-bs-target="#modalDetails">{{ product.label }}</td>
                 <td v-if="!props.shortcut" @click="$emit('productDetails',  product.product_id)" data-bs-toggle="modal" data-bs-target="#modalDetails">{{ product.price }}</td>
@@ -51,10 +51,20 @@
             </tr>
         </tbody>
     </table>
+
     <!-- Loading icon -->
     <div v-if="loading" class="spinner-border text-warning d-block mx-auto" role="status">
         <span class="visually-hidden">Laddar...</span>
     </div>
+
+    <!-- Pagination -->
+    <nav v-if="pagesArr.length > 0">
+        <ul class="pagination">
+            <li v-for="(pages, index) of pagesArr" :key="index" class="page-item" @click="currentPage = pagesArr[index]">
+                <span class="page-link" :class="{active: currentPage === pagesArr[index]}">{{ index +1 }}</span>
+            </li>
+        </ul>
+    </nav>
 </template>
 
 <script setup>
@@ -72,7 +82,7 @@
     const props = defineProps(["shortcut", "filters", "searchTerm", "reload"])
 
     //Emits
-    const emits = defineEmits(["productDetails", "filterOptions", "confirm"])
+    const emits = defineEmits(["productDetails", "filterOptions", "confirm", "listLength"])
 
     //Variables
     const router = useRouter()
@@ -87,6 +97,10 @@
     const allProducts = ref([])
     const labels = ref([])
 
+    //Pagination variables
+    const pagesArr = ref([])
+    const currentPage = ref()
+
     const updatingStock = ref(null)
 
     //Toggle inputs
@@ -96,11 +110,38 @@
         updatingStock.value = id
     }
 
+
+    //Creating pages
+    const pagination = () => {
+
+        pagesArr.value = []
+        let startInd = 0
+        let endInd = 10
+
+        for(let i = 0; startInd < productsList.value.length; i++) {
+
+            const newPage = productsList.value.slice(startInd, endInd)
+            pagesArr.value.push(newPage)
+
+            startInd = endInd
+            endInd = endInd +10
+
+        }
+
+        currentPage.value = pagesArr.value[0]
+    }
+
     //Setting productlist
     const loadProducts = () => {
-        console.log("I'm doin it")
-        if(props.shortcut) filterLowStock()
-        else productsList.value = allProducts.value
+
+
+        if(props.shortcut){
+            filterLowStock()
+        } else {
+            productsList.value = allProducts.value
+            pagination()
+        }
+
     }
 
     //Getting all products
@@ -130,6 +171,9 @@
             if(product.amount <= 3 && product.status !== "Beställd") productsList.value.push(product)
         }
 
+        emits("listLength", productsList.value.length)
+        pagination()
+
     }
 
     //Mapping labels for filter input
@@ -149,8 +193,10 @@
         
         //Fitlering
         productsList.value = allProducts.value.filter((product) => {
-            return product.product_name.toLowerCase().includes(props.searchTerm.toLowerCase()) || product.ean_code.toLowerCase().includes(props.searchTerm.toLowerCase)
+            return product.product_name.toLowerCase().includes(props.searchTerm.toLowerCase()) || product.ean_code.toLowerCase().includes(props.searchTerm.toLowerCase())
         })
+
+        pagination()
     }
 
     //Filtering products
@@ -171,6 +217,8 @@
         if(props.filters.status !== "") {
             productsList.value = productsList.value.filter((product, index) => product.status === props.filters.status)
         }
+
+        pagination()
 
     }
 
@@ -210,6 +258,8 @@
                 return a.amount - b.amount;
             });
         }
+
+        pagination()
     }
 
     //Updating stock
@@ -253,5 +303,5 @@
 </script>
 
 <style scoped>
-    td:hover { cursor: pointer; }
+    td:hover, th:hover , li:hover { cursor: pointer; }
 </style>
