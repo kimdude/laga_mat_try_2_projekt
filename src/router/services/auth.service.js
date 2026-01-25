@@ -30,16 +30,4 @@ export default {
             return false;
         }
     },
-
-    //Checking authorization
-    authorization() {
-        const token = localStorage.getItem("token");
-
-        if(token) {
-
-            //Decoding token with jwtDecode
-            const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
-        }
-    }
 }
