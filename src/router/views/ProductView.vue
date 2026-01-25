@@ -3,10 +3,13 @@
     <!-- Setting-->
     <div class="container-fluid">
         <div class="row">
-            <div class="col d-flex flex-column">
-                <img src="../assets/settings_icon.svg" class="ms-auto" alt="Inställnignar" title="Inställningar" width="20" @click="toggleSettings">
-                <ul v-if="displaySetting" class="list-group ms-auto">
-                    <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalSettings" @click="toggleCategorySettings">Hantera kategorier</li>
+            <div class="col d-flex flex-column dropdown">
+                <div class="ms-auto dropdown-toggle" data-bs-toggle="dropdown">
+                    <img src="../assets/settings_icon.svg" class="d-block mx-auto" alt="Inställnignar" title="Inställningar" width="20">
+                    <small>Inställningar</small>
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSettings" @click="toggleCategorySettings">Hantera kategorier</li>
                 </ul>
             </div>
         </div>
@@ -98,7 +101,6 @@
 
     //Reactive variables
     const confirmMessage = ref("")
-    const displaySetting = ref(false)
     const loadList = ref(0)
 
     const displayCategorySettings = ref(false)
@@ -199,17 +201,10 @@
             }
     }
 
-    //Toggling settings
-    const toggleSettings = () => {
-        if(displaySetting.value === false) displaySetting.value = true
-        else displaySetting.value = false
-    }
-
     //Toggling category settings
     const toggleCategorySettings = () => {
         if(displayCategorySettings.value === false) {
             displayCategorySettings.value = true
-            toggleSettings()
         } else {
             displayCategorySettings.value = false
         }
@@ -219,10 +214,10 @@
 
 <style scoped>
     img {
-        width: 30px;
+        width: 25px;
     }
 
-    img:hover, li:hover {
+    img:hover, li:hover, .dropdown > div:hover {
         cursor: pointer;
     }
 

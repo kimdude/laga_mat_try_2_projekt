@@ -4,16 +4,20 @@
         <div class="row">
 
             <!-- Setting-->
-            <div class="col d-flex flex-column">
-                <img src="../assets/settings_icon.svg" class="ms-auto" alt="Inställnignar" title="Inställningar" width="30" @click="toggleSettings">
-                <ul v-if="displaySetting" class="list-group ms-auto">
-                    <li class="list-group-item list-group-item-action" @click="toggleUserSettings" data-bs-toggle="modal" data-bs-target="#modalSettings">Ändra lösenord</li>
+            <div class="col d-flex flex-column dropdown">
+                <div class="ms-auto dropdown-toggle" data-bs-toggle="dropdown">
+                    <img src="../assets/settings_icon.svg" class="d-block mx-auto" alt="Inställnignar" title="Inställningar" width="20">
+                    <small>Inställningar</small>
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item" @click="toggleUserSettings" data-bs-toggle="modal" data-bs-target="#modalSettings">Ändra lösenord</li>
                 </ul>
             </div>
 
             <!-- Log out-->
-            <div class="col col-1">
-                <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="30" class="" @click="logout">
+            <div class="col col-1 pe-4">
+                <img src="../assets/logout_icon.svg" alt="Logga ut" title="Logga ut" width="20" class="d-block mx-auto" @click="logout">
+                <small>Logga ut</small>
             </div>
         </div>
     </div>
@@ -157,17 +161,10 @@
         router.push({ name: "login" })
     }
 
-    //Toggling settings nav
-    const toggleSettings = () => {
-        if(displaySetting.value === false) displaySetting.value = true
-        else displaySetting.value = false
-    }
-
     //Toggling modal with settings
     const toggleUserSettings = () => {
         if(displayUserSettings.value === false) {
             displayUserSettings.value = true
-            toggleSettings()
             
         } else {
             displayUserSettings.value = false
@@ -177,5 +174,5 @@
 </script>
 
 <style scoped>
-    img:hover, li:hover { cursor: pointer; }
+    img:hover, li:hover, .dropdown > div:hover { cursor: pointer; }
 </style>
